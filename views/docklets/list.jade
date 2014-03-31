@@ -1,0 +1,15 @@
+extends ../../layouts/layout
+
+block content
+	h1= title
+	hr
+	if docklets.length !== 0
+		table
+		-each docklet in docklets
+			tr td
+				#{docklet}
+	else
+		div.notice
+			span	No docklet added yet. 
+				a(href="#new") Add new docklet
+	

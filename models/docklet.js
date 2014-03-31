@@ -1,5 +1,4 @@
 var _ = require("underscore");
-var Base = require("./base.js");
 var uuid = require('node-uuid');
 var redisClient = require("../db");
 var CONFIG = require("config");
@@ -98,10 +97,9 @@ var Docklet = {
 					//VALIDATION PASSED
 
 					var timestamp = +new Date;
-					var redisTransaction = redisClient.multi();
-					redisTransaction
+					redisClient.multi()
 						.zadd(TABLE_NAME.plural, timestamp, obj.id) // SCREENS-ID SET 
-						.hmset( TABLE_NAME.singular+":"+obj.id, obj);
+						.hmset( TABLE_NAME.singular+":"+obj.id, obj)
 						.exec( function(err, replies){
 							util.log("MULTI got " + replies.length + " replies");
 							replies.forEach(function (reply, index) {
@@ -142,4 +140,4 @@ var Docklet = {
 
 }
 
-module.exports = Screen;
+module.exports = Docklet;

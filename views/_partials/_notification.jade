@@ -1,0 +1,8 @@
+if messages !== undefined && messages !== null
+	if messages.hasOwnProperty("error")
+		div.error= message.error
+	if messages.hasOwnProperty("errors")
+		each err in messages.errors
+			div.error= err
+	if message.hasOnwProperty("success")
+		div.success= message.success
