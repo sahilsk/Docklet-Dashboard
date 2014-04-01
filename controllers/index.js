@@ -4,8 +4,14 @@
  */
 
 exports.index = function(req, res){
-
-	//TODO : show docklets screen
-	res.redirect("/docklets")
-	//res.render('index', { title: 'Docklet Dashboard' });
+	console.log(req.url);
+	res.render('index', {
+		title: 'Docklet Dashboard',
+		page: req.url,
+		nav: {
+		  'Docklet Dashboard': '/docklets',
+		  'Dashboard': '/'
+		}
+	
+	 });
 };

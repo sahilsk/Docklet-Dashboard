@@ -16,7 +16,12 @@ exports.list = function(req, res){
 		}else{
 			var data = {
 				docklets : err?[]: list,
-				title: "Docklets"
+				title: "Docklets",
+				page: req.url,
+				nav: {
+				  'Docklet Dashboard': '/docklets',
+				  'Dashboard': '/'
+				}
 			};
 		}
 		res.render("docklets/list", data)

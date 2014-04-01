@@ -6,8 +6,8 @@
     "start": "node server.js",
     "watch": "NODE_ENV=development nodemon server.js",
     "w7watch": "nodemon server.js",
-    "testwatch": "NODE_ENV=development mocha ./test  -G  -w -c -d",
-    "w7testwatch": "mocha ./test  -G -c -d -w",
+    "testWatch": "NODE_ENV=development mocha ./test  -G  -w -c -d",
+    "w7testWatch": "mocha ./test  -G -c -d -w",
     "browserify": "browserify -t hbsfy public/javascripts/client.js > public/javascripts/bundle.js",
     "watchify": "watchify -t hbsfy public/javascripts/client.js -o public/javascripts/bundle.js"
   },

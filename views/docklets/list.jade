@@ -10,6 +10,21 @@ block content
 				#{docklet}
 	else
 		div.notice
-			span	No docklet added yet. 
-				a(href="#new") Add new docklet
+			span
+				No docklet added yet. 
+				a(href="#docklets/new") Add new docklet
 	
+		.modal.fade#docklets_new
+			.modal-dialog
+				.modal-content
+					.modal-header
+						button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+						h4.modal-title Modal title
+					.modal-body
+						p One fine body…
+					.modal-footer
+						button.btn.btn-default(type='button', data-dismiss='modal') Close
+						button.btn.btn-primary(type='button') Save changes
+
+
+		
