@@ -1,7 +1,9 @@
 var $ = require("jquery")
 var Backbone = require("backbone")
+require("./modal.js")
 Backbone.$ = $;
 window.Backbone = Backbone;
+window.jQuery =$
 
 var AppRouter = Backbone.Router.extend({
     routes: {
@@ -13,7 +15,6 @@ var AppRouter = Backbone.Router.extend({
     newDocklet :function(){
     	console.log("New Docklet window");
     	$('#docklets_new').modal();
-    	
     },
     getPost : function(id){
 		alert( "Get post number " + id );   

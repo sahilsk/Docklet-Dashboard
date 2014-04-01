@@ -24,7 +24,8 @@
     "underscore": "~1.6.0",
     "node-uuid": "~1.4.1",
     "redis": "~0.10.1",
-    "async": "~0.6.2"
+    "async": "~0.6.2",
+    "bootstrap-browserify": "~2.1.1"
   },
   "devDependencies": {
     "mocha": "~1.18.2",
