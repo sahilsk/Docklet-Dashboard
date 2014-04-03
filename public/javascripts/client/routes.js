@@ -14,7 +14,7 @@ var AppRouter = Backbone.Router.extend({
     },
     newDocklet :function(){
     	console.log("New Docklet window");
-    	$('#docklets_new').modal();
+    	$('#docklets_new').modal('toggle')
     },
     getPost : function(id){
 		alert( "Get post number " + id );   

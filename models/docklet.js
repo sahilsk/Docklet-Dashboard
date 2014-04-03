@@ -41,6 +41,10 @@ var TABLE_NAME = {
 var Docklet = {
 
 	properties :{
+		title: {
+			type: "string",
+			validations:["notEmpty"]
+		},
 		host: {
 			type: "string",
 			validations: ["notEmpty"]
@@ -125,9 +129,21 @@ var Docklet = {
 
 
 	destroy: function(obj, callback){
+
+		if( !obj){
+			callback("Invalid object" );
+			return;
+		}
+
+		var id =  null;
+		if( typeof(obj) == "object")
+			id= obj.id
+		else
+			id = obj;
+
 		redisClient.multi()
-			.del( TABLE_NAME.singular +":"+obj.id)
-			.zrem( TABLE_NAME.plural , obj.id)
+			.del( TABLE_NAME.singular +":"+id)
+			.zrem( TABLE_NAME.plural , id)
 			.exec( function(err, replies){
 				util.log("MULTI got " + replies.length + " replies");
 				replies.forEach(function (reply, index) {

@@ -3,36 +3,118 @@ extends ../../layouts/layout
 block content
 	h1= title
 	hr
-	if docklets.length !== 0
-		table
-		-each docklet in docklets
-			tr td
-				#{docklet}
-	else
-		div.notice
-			span
-				No docklet added yet. 
-				a(href="#docklets/new") Add new docklet
+
 	
-		.modal.fade#docklets_new
-			.modal-dialog.modal-sm
-				.modal-content
-					form( id="newDockletForm", method="POST" , action="#docklets/create")
+	script(type="text/template", id="dockletTemplate").
+		<table>
+			<thead>
+				<tr>
+					<th> # </th>
+					<th> name </th>
+					<th> host </th>
+					<th> port </th>
+				</tr> 
+			</thead>
+			<tbody>
+				<% 
+					_.each(docklets,function(docklet, index) {
+						<tr>
+							<td> <%= index+1 %> </td>
+							<td> <%= docklet.name %> </td>
+							<td> <%= docklet.host %> </td>
+							<td> <%= docklet.port %> </td>
+							<td> 
 
-						.modal-header
-							button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-							h4.modal-title Modal title
-						.modal-body
-								h2 Add new docklet host
+							</td>
+						</tr>	
+					})
+				%>
+			</tbody>
+
+		</table>
+	
+
+	div(class="panel panel-default")
+		div( class="panel-heading ") 
+			span(class="glyphicon glyphicon-list-alt")
+			|&nbsp; Docklet List
+		if docklets.length !== 0
+			table(class="table table-striped table-bordered", id="dockletsTable")
+				thead
+					tr
+						th #
+						th name
+						th host
+						th port
+						th Images
+						th containers
+						th processes
+						th
+							a(href="#" , class="label label-primary")
+									span(class="glyphicon glyphicon-refresh") 
+							&nbsp;
+							a(href="#docklets/new", id="newDocklet",  class="label label-primary")
+									span(class="glyphicon glyphicon-plus") 
+					tbody
+					-each docklet, index in docklets
+						tr 
+							td
+								= index+1
+							td
+								= docklet.title
+							td
+								= docklet.host
+							td
+								= docklet.port
+							td
+								img(src="/images/refreshing_x24.gif", alt="loading..." )
+							td
+								img(src="/images/refreshing_x24.gif", alt="loading..." )
+							td
+								img(src="/images/refreshing_x24.gif", alt="loading..." )
+							td
+								a(href="#" , class="label label-primary action-refresh", )
+									span(class="glyphicon glyphicon-refresh", data-toggle="tooltip", data-placement="bottom", title="Refresh") 
+								&nbsp;
+								a(href="#" , class="label label-success action-explore")
+									span(class="glyphicon glyphicon-eye-open") 
+								&nbsp;
+								a(href="#", class="label label-danger action-delete", docker-id="#{docklet.id}")
+									span(class="glyphicon glyphicon-remove")
+					tfooter
+		else
+			div.notice
+				span
+					No docklet added yet. 
+
+
+	a(href="#docklets/new", id="newDocklet") Add new docklet
+	
+	.modal.fade#docklets_new
+		.modal-dialog
+			.modal-content
+				div( class="alert  alert-dismissable hidden ", id="actionStatus")
+					button(type="button", class="close", data-dismiss="alert", aria-hidden="true") 
+						&times; 
+
+				form( id="newDockletForm", method="POST" , action="#docklets/create", role="form")
+
+					.modal-header
+						button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+						h4.modal-title Add new docklet host
+					.modal-body
+							div(class="form-group")
+								label(for="title") Title
+								input(type="text", id="title", name="title", class="form-control")
+							div(class="form-group")							
 								label(for="host") Host
-								input(type="text", id="host", name="host")
-								br
-								label(for="port") Port
-								input(type="text", id="port", name="port")
+								input(type="text", id="host", name="host", placeholder="eg. 127.0.0.1", class="form-control")
+								span :
+								input(type="text", id="port", name="port", placeholder="eg.4340", class="form-control")
 
-						.modal-footer
-							button.btn.btn-default(type='button', data-dismiss='modal', onClick=("javascript:void(0)")) Close
-							button.btn.btn-primary(type='submit') Save changes
+					.modal-footer
+						button.btn.btn-default(type='button', data-dismiss='modal', onClick=("javascript:void(0)")) Close
+						button.btn.btn-primary(type='submit') Save changes
 
 
-		
+	
