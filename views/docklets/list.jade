@@ -15,16 +15,24 @@ block content
 				a(href="#docklets/new") Add new docklet
 	
 		.modal.fade#docklets_new
-			.modal-dialog
+			.modal-dialog.modal-sm
 				.modal-content
-					.modal-header
-						button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-						h4.modal-title Modal title
-					.modal-body
-						p One fine body…
-					.modal-footer
-						button.btn.btn-default(type='button', data-dismiss='modal') Close
-						button.btn.btn-primary(type='button') Save changes
+					form( id="newDockletForm", method="POST" , action="#docklets/create")
+
+						.modal-header
+							button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+							h4.modal-title Modal title
+						.modal-body
+								h2 Add new docklet host
+								label(for="host") Host
+								input(type="text", id="host", name="host")
+								br
+								label(for="port") Port
+								input(type="text", id="port", name="port")
+
+						.modal-footer
+							button.btn.btn-default(type='button', data-dismiss='modal', onClick=("javascript:void(0)")) Close
+							button.btn.btn-primary(type='submit') Save changes
 
 
 		

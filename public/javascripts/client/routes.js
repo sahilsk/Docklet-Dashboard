@@ -20,10 +20,13 @@ var AppRouter = Backbone.Router.extend({
 		alert( "Get post number " + id );   
 	},
 	defaultRoute: function(actions){
-	   alert( "Action not support : " + actions ); 
+	   console.log( "Action not support : " + actions ); 
 
 	}
 });
+
+
+
 
 
 /*
