@@ -17,7 +17,6 @@ Docklet.prototype.oncreate = function( spark, data, fn){
 					resData.data =docklet;
 				}
 			fn( resData);
-
 		})
 	} catch(err){
 		resData.error = err;
@@ -32,10 +31,7 @@ Docklet.prototype.ondelete = function( spark, id, fn){
 	mDocklet.destroy(id, function(err){
 		resData.error = err;
 		fn( resData);
-
 	})
-
-
 }
 
 Docklet.prototype.oninfo = function( spark, data, fn){
@@ -61,7 +57,36 @@ Docklet.prototype.oninfo = function( spark, data, fn){
 		resData.error = error;
 		fn( JSON.stringify( resData ) );		
 	}
-
 }
+
+
+
+Docklet.prototype.ongetImages = function( spark, data, fn){
+	var resData = { error: null, data:null};
+
+	try{
+		var docker = new require('dockerode')({host: "http://"+data.host, port: data.port});
+		docker.listImages(function(err, images) {
+			if(err) {
+				console.log("error caught: " + err);
+				resData.error = err;
+				fn( resData );
+			}else{
+				console.log("images: ", images);
+				resData.data = images;
+				fn(resData);
+			}
+		});
+	} catch(error){
+		console.log("error caught: " + error);
+		resData.error = error;
+		fn( resData  );		
+	}
+}
+
+
+
+
+
 
 module.exports = Docklet;
