@@ -31,7 +31,8 @@
     "primus-multiplex": "~2.2.0",
     "primus-rooms": "~2.2.0",
     "primus-emitter": "~2.0.5",
-    "ws": "~0.4.31"
+    "ws": "~0.4.31",
+    "substream": "0.0.2"
   },
   "devDependencies": {
     "mocha": "~1.18.2",

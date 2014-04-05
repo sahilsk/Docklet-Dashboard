@@ -13485,6 +13485,14 @@ var $dockletContainer = $("#dockletsTable tbody");
       opts: { since:datetime/1000, stream: true, stdout: true, stderr: true, tty: false }
     }
 
+    var foo = socket.substream('dockerEvents');
+
+    foo.on('data', function (data) {
+      console.log('recieved data', data);
+    }).on('end', function () {
+      console.log('connection has closed or substream was closed');
+    });
+
     console.log("Trackng events since", data.opts.since)
     Docklet.events(data, function(res){
       if(res.error){

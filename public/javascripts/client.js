@@ -9,7 +9,7 @@ var app_router = new AppRouter;
 
  
 var socket = Primus.connect('ws://'+window.location.host );
-socket.on('open', function () {	
+socket.on('open', function () {
   socket.send('hi', 'hello world');
   socket.on('hello', function (msg) {
 	  console.log(msg);
@@ -17,6 +17,15 @@ socket.on('open', function () {
 
 });
   
+
+socket.on("data", function(stream){
+  console.log("Data::" + JSON.stringify(stream));
+})
+
+socket.on("event", function(stream){
+  console.log("Event::" +stream);
+})
+
 
 var Docklet = socket.resource('Docklet');
 
@@ -90,21 +99,17 @@ var $dockletContainer = $("#dockletsTable tbody");
 
   var refreshDocklet = function(event){
     event.preventDefault(); 
-    $row = $(this).closest("tr");
-    $tdArray = $row.find("td"); 
+    var $row = $(this).closest("tr");
+    var $tdArray = $row.find("td"); 
 
-    var data = {
-       host: $tdArray.eq(2).text().trim(),
-       port: $tdArray.eq(3).text().trim()
-    };
-    $images  = $tdArray.eq(4);
-    $containers = $tdArray.eq(5);
-    $memoryLimit = $tdArray.eq(6);
+    var id = $(this).attr("docker-id");
+    var $images  = $tdArray.eq(4);
+    var $containers = $tdArray.eq(5);
+    var $memoryLimit = $tdArray.eq(6);
  
     $($images, $containers, $memoryLimit).html( LOADING_GIF_24 );
 
-    console.log(data);
-    Docklet.info(data, function(res){
+    Docklet.info(id, function(res){
       if(res.error){
         console.log(res.error);
       }else{ 
@@ -137,32 +142,75 @@ var $dockletContainer = $("#dockletsTable tbody");
       });
     }else{
       $row.removeClass("danger");
-    }
+    } 
   }
 
   var exploreDocklet = function( event){
     event.preventDefault(); 
     $row = $(this).closest("tr");
     $tdArray = $row.find("td"); 
+    var docker_id = $(this).attr("docker-id");
 
-    var data = {
-       host: $tdArray.eq(2).text().trim(),
-       port: $tdArray.eq(3).text().trim()
-    };
+    var id = $(this).attr("docker-id");
 
-
-    Docklet.getImages(data, function(res){
+    Docklet.explore(id, function(res){
       if(res.error){
         console.log("Error: ", res.error)
       }else{
         console.log(res.data);
-        $imageTable =  _.template( $("#imageTableTemplate").html(), {images:res.data} );
-        console.log($imageTable);
-        $("body").append($imageTable);
-      }
+        $imageTable =  _.template( $("#imageTableTemplate").html(), {images:res.data.images} );
 
+        res.data.imagesTable = $imageTable;
+        
+        $explorePanel = _.template( $("#explorePanelTemplate").html(), res.data );
+
+        $("#panel_"+id).remove();
+        //console.log($explorePanel);
+        $("body").append($explorePanel);
+        $(".datepicker").pickadate();
+         $(".timepicker").pickatime();
+      }
     });
   }
+
+  var monitorEvents = function(event){
+    event.preventDefault();
+    var id = $(this).attr("docker-id");
+    
+    var date = $("#panel_"+id).find(".datepicker").val();
+    var time = $("#panel_"+id).find(".timepicker").val();
+    var datetime = Date.parse( date+" "+time);
+    datetime= 1385863200000;
+    if( isNaN(datetime) ){
+      alert("Invalid date: " + date+" "+time);
+      return;
+    }
+    var data ={
+      id: id,
+      opts: { since:datetime/1000, stream: true, stdout: true, stderr: true, tty: false }
+    }
+
+
+    var foo = socket.substream('dockerEvents');
+
+    foo.on('data', function (data) {
+      console.log('recieved data', data);
+    }).on('end', function () {
+      console.log('connection has closed or substream was closed');
+    });
+
+    console.log("Trackng events since", data.opts.since)
+    Docklet.events(data, function(res){
+      if(res.error){
+        
+      }else{
+        console.log(res.data);
+        
+      }
+    });
+  }
+
+
 
   //BIND 
     //REFRESH DOCKLET
@@ -172,7 +220,7 @@ var $dockletContainer = $("#dockletsTable tbody");
    //DELETE DOCKLET
      $dockletContainer.on("click", "a.action-delete", deleteDocklet);
 
-
+     $("body").on('click', "#dockerEvents", monitorEvents)
 
 
 Backbone.history.start();

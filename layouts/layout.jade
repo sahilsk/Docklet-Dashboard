@@ -2,9 +2,16 @@ doctype html
 html
 	head
 		title= title
+		link( rel="icon", type="image/png" , href='/images/favicon.ico')
 		link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
 		link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css')
 		link(rel='stylesheet', href='/stylesheets/style.css')
+		link(rel='stylesheet', href='/picker/themes/default.css')
+		link(rel='stylesheet', href='/picker/themes/default.date.css')
+		link(rel='stylesheet', href='/picker/themes/default.time.css')
+
+
+
 
 
 	body
@@ -15,12 +22,16 @@ html
 		
 
 
-
-		block content
+		div.container
+			block content
 		
 		script(src="/javascripts/jquery.min.js")
 		script(src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js")
 		script( src="/primus/primus.io.js")
+		script( src="/picker/picker.js")
+		script( src="/picker/picker.date.js")
+		script( src="/picker/picker.time.js")
+
 		script(src="/javascripts/bundle.js")
 		
 		include ../views/_partials/_footer

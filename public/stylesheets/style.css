@@ -8,3 +8,19 @@ body {
 .hidden {
   display: none;
 }
+.count {
+  background-color: #428bca;
+  border-radius: 10em;
+  height: 50px;
+  width: 120px;
+  text-align: center;
+  vertical-align: middle;
+  overflow: hidden;
+  text-shadow: 1px 1px 1px #333;
+  color: #ccc;
+}
+.count span {
+  color: #FFF;
+  line-height: 1em;
+  font-size: 3em;
+}

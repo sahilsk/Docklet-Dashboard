@@ -13,9 +13,11 @@ var server = http.createServer(app);
 // Primus server
 var primus = new Primus(server,{ transformer: 'websockets', parser: 'JSON' });
 // Use resource plugin
-primus
-.use('resource', resource);
-rtController(primus);
+primus.use('resource', resource);
+primus.use('substream', require('substream'));
+
+rtController.Resources(primus);
+
 
 
 //Start server

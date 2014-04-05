@@ -1,4 +1,7 @@
+var async = require("async");
+var _ = require("underscore");
 var  mDocklet = require("../../models/docklet")
+var  rt = require("../rtController")
 //Docklet Resource
 
 var Docklet = function(){}
@@ -34,29 +37,31 @@ Docklet.prototype.ondelete = function( spark, id, fn){
 	})
 }
 
-Docklet.prototype.oninfo = function( spark, data, fn){
+Docklet.prototype.oninfo = function( spark, id, fn){
 	var resData = { error: null, data:null};
 
-	try{
-		var docker = new require('dockerode')({host: "http://"+data.host, port: data.port});
-		docker.info(function(err, info) {
-			if(err) {
-				console.log("error caught: " + err);
-				resData.error = err;
-				fn( resData );
-				return;
-			}else{
-				console.log("info: ", info);
-				resData.data = info;
-				fn(resData);
-				return;
-			}
-		});
-	} catch(error){
-		console.log("error caught: " + error);
-		resData.error = error;
-		fn( JSON.stringify( resData ) );		
-	}
+	mDocklet.find(id, function( err, obj){
+		if( err){
+			console.log("error caught: " + error);
+			resData.error = error;
+			fn( JSON.stringify( resData ) );		
+
+		}else{
+			var docker = new require('dockerode')({host: "http://"+obj.host, port: obj.port});
+			docker.info(function(err, info) {
+				if(err) {
+					console.log("error caught: " + err);
+					resData.error = err;
+					fn( resData );
+				}else{
+					console.log("info: ", info);
+					resData.data = info;
+					fn(resData);
+				}
+			});		
+	
+		}
+	})
 }
 
 
@@ -82,6 +87,87 @@ Docklet.prototype.ongetImages = function( spark, data, fn){
 		resData.error = error;
 		fn( resData  );		
 	}
+}
+
+
+Docklet.prototype.onexplore  = function( spark, id, fn){
+
+	var resData = { error: null, data:null};
+
+	mDocklet.find(id, function( err, obj){
+		if( err){
+			console.log("error caught: " + error);
+			resData.error = error;
+			fn( resData );		
+
+		}else{
+			var docker = new require('dockerode')({host: "http://"+obj.host, port: obj.port});
+			async.parallel(
+			{
+			    info: function(callback){
+			     	docker.info(function(err, info) {
+						callback(err, info);
+					})
+			    },
+			    version: function(callback){
+			    	docker.version( function(err, version){
+			    		callback(err, version);
+			    	})
+				 },
+				 images: function(callback){
+				 	docker.listImages(function(err, images) {
+						callback(err, images);
+					});
+				 }
+			},
+			function(err, results) {
+			    if(err){
+					console.log("error caught: " + err);
+					resData.error = err;
+					fn( resData );
+			    }else{
+			    	resData.data = _.extend(results.info, results.version, {images: results.images}, obj);
+			    	resData.data.id = id;
+			    	fn( resData);
+			    }
+
+			});
+
+	
+		}
+	})
+
+}
+
+Docklet.prototype.onevents = function( spark, data, fn){
+	var resData = { error: null, data:null};
+
+	mDocklet.find(data.id, function( err, obj){
+		if( err){
+			console.log("error caught: " + error);
+			resData.error = error;
+			fn( JSON.stringify( resData ) );		
+
+		}else{
+			var docker = new require('dockerode')({host: "http://"+obj.host, port: obj.port});
+			docker.getEvents (data.opts, function(err, stream) {
+				if(err) {
+					console.log("error caught: " + err);
+					resData.error = err;
+					fn( resData );
+				}else{
+
+					//spark.write(stream);
+					stream.pipe(rt.event);
+
+					//console.log("info: ", stream);
+					resData.data = "stream";
+					fn(resData);
+				}
+			});		
+	
+		}
+	})
 }
 
 
