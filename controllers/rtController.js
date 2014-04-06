@@ -1,17 +1,19 @@
 
 var docklet = require("./RT/Docklet.js")
+	var dockerEventStream = null;
 
 var client = null;
 var Resources = function( primus){
 	// Handshake with client
 	//STREAM HANDLER
-	var dockerEventStream = null;
 	primus.on('connection', function (spark) {
-	  client = spark;
+		console.log(spark.id)
 	  spark.on('hi', function (msg) {
 	    console.log(msg); //-> hello world
 	    spark.send('hello', 'hello from the server');
 	  });
+
+	  var foo = spark.substream('foo')
 
 	  dockerEventStream = spark.substream('dockerEvents');
 
@@ -23,12 +25,4 @@ var Resources = function( primus){
 }
 
 
-
-module.exports = {
-	Resources: Resources,
-	spark:client,
-	event:dockerEventStream
-}
-
-//Export primus resources
-//module.exports = Resources;
+module.exports = Resources;

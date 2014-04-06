@@ -17,15 +17,21 @@ socket.on('open', function () {
 
 });
   
-
 socket.on("data", function(stream){
-  console.log("Data::" + JSON.stringify(stream));
+  console.log("Data:::::::::::::" + stream.toString()) ;
 })
 
-socket.on("event", function(stream){
-  console.log("Event::" +stream);
-})
 
+var dockerEvents = socket.substream('dockerEvents');
+
+/*
+var foo = socket.substream('foo');
+foo.on('data', function (data) {
+  console.log('recieved data', data);
+}).on('end', function () {
+  console.log('connection has closed or substream was closed');
+});
+*/
 
 var Docklet = socket.resource('Docklet');
 
@@ -187,25 +193,16 @@ var $dockletContainer = $("#dockletsTable tbody");
     }
     var data ={
       id: id,
-      opts: { since:datetime/1000, stream: true, stdout: true, stderr: true, tty: false }
+     opts: { since:datetime/1000 }
+ //     opts: {}
     }
-
-
-    var foo = socket.substream('dockerEvents');
-
-    foo.on('data', function (data) {
-      console.log('recieved data', data);
-    }).on('end', function () {
-      console.log('connection has closed or substream was closed');
-    });
 
     console.log("Trackng events since", data.opts.since)
     Docklet.events(data, function(res){
       if(res.error){
-        
+        console.log("Error :", res.error)
       }else{
-        console.log(res.data);
-        
+        console.log(res.data);        
       }
     });
   }

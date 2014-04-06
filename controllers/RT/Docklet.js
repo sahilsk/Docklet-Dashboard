@@ -1,7 +1,6 @@
 var async = require("async");
 var _ = require("underscore");
 var  mDocklet = require("../../models/docklet")
-var  rt = require("../rtController")
 //Docklet Resource
 
 var Docklet = function(){}
@@ -146,7 +145,7 @@ Docklet.prototype.onevents = function( spark, data, fn){
 		if( err){
 			console.log("error caught: " + error);
 			resData.error = error;
-			fn( JSON.stringify( resData ) );		
+			fn(  resData );		
 
 		}else{
 			var docker = new require('dockerode')({host: "http://"+obj.host, port: obj.port});
@@ -157,11 +156,25 @@ Docklet.prototype.onevents = function( spark, data, fn){
 					fn( resData );
 				}else{
 
-					//spark.write(stream);
-					stream.pipe(rt.event);
+					var  connection = require("../../server")
+					stream.setEncoding('utf-8');
+					//stream.pipe(spark);
+					/*
+					var through  = require("through")
+					var a = through(function write(data) {
+						    this.queue(data) //data *must* not be null
+						  },
+						  function end () { //optional
+						    this.queue(null)
+						  })
 
-					//console.log("info: ", stream);
-					resData.data = "stream";
+
+					a.pipe(spark)
+					*/
+					console.log(spark.id)
+					stream.pipe(connection.primus)
+					//a.write('Hello Wrld');
+					resData.data = "STREAMING";
 					fn(resData);
 				}
 			});		
