@@ -31,7 +31,9 @@
     "primus-rooms": "~2.2.0",
     "primus-emitter": "~2.0.5",
     "ws": "~0.4.31",
-    "substream": "0.0.2"
+    "substream": "0.0.2",
+    "hypernal": "~0.2.7",
+    "prettyjson": "~1.0.0"
   },
   "devDependencies": {
     "mocha": "~1.18.2",

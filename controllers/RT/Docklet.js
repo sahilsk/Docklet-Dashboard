@@ -127,6 +127,7 @@ Docklet.prototype.onexplore  = function( spark, id, fn){
 			    }else{
 			    	resData.data = _.extend(results.info, results.version, {images: results.images}, obj);
 			    	resData.data.id = id;
+    				resData.data.dockerHost = obj;
 			    	fn( resData);
 			    }
 
@@ -171,7 +172,6 @@ Docklet.prototype.onevents = function( spark, data, fn){
 
 					a.pipe(spark)
 					*/
-					console.log(spark.id)
 					stream.pipe(connection.primus)
 					//a.write('Hello Wrld');
 					resData.data = "STREAMING";
@@ -185,6 +185,27 @@ Docklet.prototype.onevents = function( spark, data, fn){
 
 
 
+Docklet.prototype.oninspectImage = function(spark, data, fn){
+	var resData = { error: null, data:null};
+
+	var docker = new require('dockerode')({host: "http://"+data.dockerHost.host, port: data.dockerHost.port});
+
+	var prettyjson = require('prettyjson');
+
+	var image = docker.getImage(data.imageId);
+	image.inspect( function(err,res){
+		if(err){
+			resData.error = err;
+			fn(resData);
+		}{
+			console.log(res);
+			var pData = prettyjson.render( res);
+			resData.data = pData;
+			console.log( pData);
+			fn(resData);
+		}
+	});
+}
 
 
 

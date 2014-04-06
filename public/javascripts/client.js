@@ -51,6 +51,10 @@ var LOADING_GIF_24  = new Image;
 LOADING_GIF_24.src="/images/refreshing_x24.gif";
 
 
+//GLOBAL VARIABLES
+  var selectedDockerHost = {};
+
+
 // Show form to add docklet
 $("#newDocklet").on("click", function(e){
     e.preventDefault();
@@ -164,17 +168,20 @@ var $dockletContainer = $("#dockletsTable tbody");
         console.log("Error: ", res.error)
       }else{
         console.log(res.data);
-        $imageTable =  _.template( $("#imageTableTemplate").html(), {images:res.data.images} );
+        $imageTable =  _.template( $("#imageTableTemplate").html(), {images:res.data.images, dockerId:id} );
 
         res.data.imagesTable = $imageTable;
         
         $explorePanel = _.template( $("#explorePanelTemplate").html(), res.data );
 
         $("#panel_"+id).remove();
-        //console.log($explorePanel);
-        $("body").append($explorePanel);
+        $("#dynDataPlaceholder").append($explorePanel);
         $(".datepicker").pickadate();
          $(".timepicker").pickatime();
+
+         //SET SELECTED DOCKERHOST INSTANCE
+         selectedDockerHost = res.data.dockerHost
+
       }
     });
   }
@@ -194,7 +201,6 @@ var $dockletContainer = $("#dockletsTable tbody");
     var data ={
       id: id,
      opts: { since:datetime/1000 }
- //     opts: {}
     }
 
     console.log("Trackng events since", data.opts.since)
@@ -220,5 +226,50 @@ var $dockletContainer = $("#dockletsTable tbody");
      $("body").on('click', "#dockerEvents", monitorEvents)
 
 
-Backbone.history.start();
 
+/******************** IMAGE TABLE *****************/
+
+
+
+var renderImageInfo =  function(){
+  var imageId = $(this).text();
+
+  console.log("fetch detailed image info of (%s) %j", imageId, selectedDockerHost); 
+
+  var data = {
+    imageId : $(this).text().trim(),
+    dockerHost : selectedDockerHost
+  }
+
+  console.log( "Hostname",  selectedDockerHost.host)
+  Docklet.inspectImage( data, function(res){
+
+    if(res.error){
+      console.log( "Error inspecting image: ", res.error);
+    }else{
+      console.log( selectedDockerHost);
+
+      var term = require('hypernal')();
+      term.appendTo('#terminal');
+
+      term.write(res.data);
+
+    }
+
+  });
+}
+
+
+
+
+
+
+$("#dynDataPlaceholder").on("click", ".imageTable tr td:nth-child(2)" , renderImageInfo);
+
+
+
+
+
+
+
+Backbone.history.start();
