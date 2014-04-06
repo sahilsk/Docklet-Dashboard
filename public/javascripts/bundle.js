@@ -19277,6 +19277,11 @@ socket.on('open', function () {
   
 socket.on("data", function(stream){
   console.log("Data:::::::::::::" + stream.toString()) ;
+
+      var term = require('hypernal')();
+      term.appendTo('#terminal');
+      term.write(stream.toString());
+
 })
 
 
