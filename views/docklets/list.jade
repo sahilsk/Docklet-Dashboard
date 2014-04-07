@@ -63,7 +63,7 @@ block content
 				&nbsp; Images List 
 			</div>
 			<div class="panel-body table-responsive">
-				<table class="table table-striped table-bordered imageTable">
+				<table class="table table-striped table-borderedf imageTable">
 					<thead>
 						<tr>
 							<th> # </th>
@@ -138,6 +138,15 @@ block content
 						<th> <%=  %> </th>
 
 
+	script( type="text/template", id="floatingWindowTemplate")
+		div( class="panel panel-primary floatingWindow" id="terminal001")
+			div.panel-heading
+				h4.panel-title Image Info
+					button( class="pull-right glyphicon glyphicon-remove closeFloatingWindow" aria-hidden="true" onClick="$('#terminal').parent().toggleClass('hidden');" style="color: rgb(73, 68, 68);")  
+					button( class="glyphicon glyphicon-minus pull-right minFloatingWindow" aria-hidden="true" style="color: rgb(73, 68, 68);" )
+			div.panel-body
+				div.outputWindow
+
 
 	div(class="panel panel-default")
 		div( class="panel-heading ") 
@@ -195,19 +204,12 @@ block content
 	
 
 
-	div( class="panel panel-primary" id="terminal001" style="position: fixed; bottom: -10px; width: 630px;")
-		div.panel-heading
-			h4.panel-title Image Info
-
-				<button type="button" class="close" aria-hidden="true" onClick="$('#terminal').parent().toggleClass('hidden');">&times;</button>
-				<span class="glyphicon glyphicon-import pull-right" aria-hidden="true" style="color: rgb(73, 68, 68);">&nbsp;</span>
-
-		div.panel-body
-			div#terminal.well &nbsp;
-		</div>
-
-
 	div(class="container responsive-table" id="dynDataPlaceholder")
+
+
+	div.floatingWindowsWrapper
+		ul.floatingWindowList
+
 
 	.modal.fade#docklets_new
 		.modal-dialog

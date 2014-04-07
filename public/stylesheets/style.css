@@ -21,7 +21,7 @@ body {
   line-height: 1em;
   font-size: 3em;
 }
-#terminal {
+.outputWindow {
   width: 600px;
   height: 400px;
   background: black;
@@ -30,4 +30,17 @@ body {
   border: 2px solid #CEE1F0;
   font-family: Monaco;
   font-size: 16px;
+}
+.floatingWindowsWrapper {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  overflow: auto;
+}
+ul.floatingWindowList li {
+  float: left;
+  list-style: none;
+}
+.floatingWindow {
+  width: 630px;
 }

@@ -20,9 +20,8 @@ socket.on('open', function () {
 socket.on("data", function(stream){
   console.log("Data:::::::::::::" + stream.toString()) ;
 
-      var term = require('hypernal')();
-      term.appendTo('#terminal');
-      term.write(stream.toString());
+    //addFloatingWindow(stream.toString())
+
 
 })
 
@@ -253,11 +252,7 @@ var renderImageInfo =  function(){
       console.log( "Error inspecting image: ", res.error);
     }else{
       console.log( selectedDockerHost);
-
-      var term = require('hypernal')();
-      term.appendTo('#terminal');
-
-      term.write(res.data);
+      addFloatingWindow(res.data)
 
     }
 
@@ -265,13 +260,53 @@ var renderImageInfo =  function(){
 }
 
 
-
-
-
-
 $("#dynDataPlaceholder").on("click", ".imageTable tr td:nth-child(2)" , renderImageInfo);
 
 
+
+
+/*****************
+FLOATING WINDOW
+*****************/
+
+var addFloatingWindow = function(data){
+  var floatingWindow = _.template( $("#floatingWindowTemplate").html(),{} );
+
+
+  floatingWindow = $("<li></li>").append(floatingWindow);
+  console.log( floatingWindow);
+  floatingWindow.appendTo(".floatingWindowList");
+
+  var term = require('hypernal')();
+  term.appendTo(".floatingWindowList li:last-child .outputWindow" );
+  term.write(data);  
+
+}
+
+
+
+var minimizeWindow = function(){
+  console.log("Minimizing window...")
+  var floatingWindow = $(this).closest(".floatingWindow");
+  
+  $panelBody  = $(this).parent().parent().next();
+  $panelBody.toggleClass("hidden")
+
+  if( $panelBody.hasClass('hidden') ){
+      console.log("Changing height: 20%");
+      $(floatingWindow).width("200px");
+  } else{
+    $(floatingWindow).width("600px");
+  }
+
+}
+var closeFloatingWindow = function(){
+  console.log("closing window...");
+  $(this).closest(".floatingWindow").remove();
+}
+
+$("body").on("click", ".minFloatingWindow", minimizeWindow );
+$("body").on("click", ".closeFloatingWindow", closeFloatingWindow );
 
 
 
