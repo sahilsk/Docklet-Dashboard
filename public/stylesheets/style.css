@@ -5,6 +5,16 @@ body {
   padding: 40px 15px;
   text-align: center;
 }
+#dockerEvents {
+  font-size: 27px;
+  line-height: 27px;
+  vertical-align: middle;
+}
+#dockerEventWindow {
+  position: fixed;
+  bottom: 0px;
+  left: 10px;
+}
 .count {
   background-color: #428bca;
   border-radius: 10em;
@@ -30,15 +40,22 @@ body {
   border: 2px solid #CEE1F0;
   font-family: Monaco;
   font-size: 16px;
+  overflow: auto;
 }
 .floatingWindowsWrapper {
   position: fixed;
   bottom: 0px;
-  width: 100%;
-  overflow: auto;
+  right: 10px;
+}
+.floatingWindowList {
+  position: absolute;
+  bottom: 0px;
+  right: 10px;
+}
+.floatingWindowList .floatingWindow {
+  float: right;
 }
 ul.floatingWindowList li {
-  float: left;
   list-style: none;
 }
 .floatingWindow {

@@ -165,14 +165,11 @@ Docklet.prototype.onevents = function( spark, data, fn){
 					var es = require("event-stream");
 					var through = require("through");
 					stream.pipe(JSONStream.parse())
-						   .pipe(es.mapSync(function (data) {
-             	    	  console.log( prettyjson.render(data))
-  						   	connection.primus.write(data);
-  						  // 	spark.write(data);
-  						   //	spark.send("event",data);
-  						   	//spark.write("event", data);
+						  .pipe(es.mapSync(function (data) {
+								console.log( prettyjson.render(data))
+								connection.primus.write(prettyjson.render(data));
 
-					}))
+						   }))
 
 
 					//stream.pipe(connection.primus)

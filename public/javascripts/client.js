@@ -18,41 +18,11 @@ socket.on('open', function () {
 });
   
 socket.on("data", function(stream){
-  console.log("Data:::::::::" + stream) ;
-
-  if( typeof stream === "object"){
-    var data = stream;
-    console.log(data);
-    var outputArea = $("#dockerEventWindow .outputWindow");
-    if( $(outputArea).find("table").size() ==0 ){
-        
-      // add table
-        $(outputArea).append("<table></table>");
-
-        var $table = $(outputArea).find("table");
-        var str = "<thead><tr>"
-
-      //add header
-      for(key in data){
-          console.log("Keyyyyyyyyy: ",key); 
-          str += "<th>" +key + "</th>"
-      }
-      str += "</tr></thead>"
-
-      $table.append( str);
-      $table.append("<tbody></tbody>");
-    }
-    
-    var $tbody = $(outputArea).find("tbody");
-
-    var str ="<tr>";
-    for( key in data){
-      str +=  "<td>" + data[key] +" </td>";
-    }
-    str = "</tr>"
-
-    $tbody.append(str);
-  }
+  console.log("Data:::::::::" + stream.toString()) ;
+  $("#dockerEventWindow .outputWindow").append("<hr/>" );
+  var term = require('hypernal')();
+  term.appendTo("#dockerEventWindow .outputWindow" );
+  term.write(stream); 
 
 });
 
@@ -240,7 +210,7 @@ var $dockletContainer = $("#dockletsTable tbody");
     }
     var data ={
       id: id,
-     opts: { since:datetime/1000 }
+      opts: { since:datetime/1000 }
     }
 
     console.log("Trackng events since", data.opts.since)
@@ -309,13 +279,11 @@ var addFloatingWindow = function(data){
 
   var floatingWindow = _.template( $("#floatingWindowTemplate").html(),{title:data.title} );
 
-
-  floatingWindow = $("<li></li>").append(floatingWindow);
   console.log( floatingWindow);
-  floatingWindow.appendTo(".floatingWindowList");
+  $(floatingWindow).appendTo(".floatingWindowList");
 
   var term = require('hypernal')();
-  term.appendTo(".floatingWindowList li:last-child .outputWindow" );
+  term.appendTo(".floatingWindowList .floatingWindow:last-child .outputWindow" );
   term.write(data.result);  
 
 }
@@ -329,7 +297,7 @@ var minimizeWindow = function(){
 
   if( $panelBody.hasClass('hidden') ){
       console.log("Changing height: 20%");
-      $(floatingWindow).width("200px");
+      $(floatingWindow).width("300px");
   } else{
     $(floatingWindow).width("600px");
   }

@@ -12,7 +12,7 @@ var server = http.createServer(app);
 
 
 // Primus server
-var primus = new Primus(server,{ transformer: 'sockjs' });
+var primus = new Primus(server,{ transformer: 'websockets' });
 // Use resource plugin
 primus
 .use('multiplex', 'primus-multiplex')

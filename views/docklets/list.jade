@@ -50,7 +50,7 @@ block content
 						<% _.each( images, function(image,index){ %>
 							<tr>
 								<td> <%= index + 1 %> </td>
-								<td> <%= image.Id.substring(0, 14) %>  </td>
+								<td> <a href="javascritp:void(0);" ><span class="label label-primary"><%= image.Id.substring(0, 14) %> </span> </a>  </td>
 								<td> <%= image.RepoTags %> </td>
 								<td> <%= image.Created %>  </td>
 								<td> <%= image.Size %> </td>
@@ -64,16 +64,15 @@ block content
 		</div>
 
 	script( type="text/template", id="explorePanelTemplate")
-		div(class="page-header", id!= "<%='panel_'+ id %>" )
-			h2 
-				| Docklet Host:
-				span.label.label-default
-					| <%= title %> (<%= host %>:<%=port%>)
+		div(class="page-header", id!="<%='panel_'+ id %>" )
+			h4.alert.alert-info
+				|<%= title %> (<%= host %>:<%=port%>)
+				span(class="badge pull-right") 
 					|v<%= Version %>
 
 			hr
 			div
-			.col-md-8.text-center.form-inline
+			.col-md-8.form-inline
 				label  Monitor Docker Events  
 				input.form-control.datepicker(type='textbox')
 				input.form-control.timepicker(type='textbox', size="10")
@@ -87,7 +86,7 @@ block content
 					span  <%= Images %>
 					| Images
 			.clearfix
-		<%= imagesTable %>
+			<%= imagesTable %>
 
 
 
@@ -100,10 +99,10 @@ block content
 
 
 	script( type="text/template", id="floatingWindowTemplate")
-		div( class="panel panel-primary floatingWindow" id="terminal001")
+		div( class="panel panel-primary floatingWindow" )
 			div.panel-heading
 				h4.panel-title <%= title %>
-					button( class="pull-right glyphicon glyphicon-remove closeFloatingWindow" aria-hidden="true" onClick="$('#terminal').parent().toggleClass('hidden');" style="color: rgb(73, 68, 68);")  
+					button( class="pull-right glyphicon glyphicon-remove closeFloatingWindow" aria-hidden="true" style="color: rgb(73, 68, 68);")  
 					button( class="glyphicon glyphicon-minus pull-right minFloatingWindow" aria-hidden="true" style="color: rgb(73, 68, 68);" )
 			div.panel-body
 				div.outputWindow
@@ -169,12 +168,11 @@ block content
 
 
 	div.floatingWindowsWrapper
-		ul.floatingWindowList
+		.floatingWindowList
 
 	div( class="panel panel-primary floatingWindow" id="dockerEventWindow")
 		div.panel-heading
-			h4.panel-title <%= title %>
-				button( class="pull-right glyphicon glyphicon-remove closeFloatingWindow" aria-hidden="true" onClick="$('#terminal').parent().toggleClass('hidden');" style="color: rgb(73, 68, 68);")  
+			h4.panel-title Docker Event
 				button( class="glyphicon glyphicon-minus pull-right minFloatingWindow" aria-hidden="true" style="color: rgb(73, 68, 68);" )
 		div.panel-body
 			div.outputWindow
