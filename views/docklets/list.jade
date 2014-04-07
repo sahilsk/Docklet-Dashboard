@@ -5,34 +5,6 @@ block content
 	hr
 
 	
-	script(type="text/template", id="dockletTemplate").
-		<table>
-			<thead>
-				<tr>
-					<th> # </th>
-					<th> name </th>
-					<th> host </th>
-					<th> port </th>
-				</tr> 
-			</thead>
-			<tbody>
-				<% 
-					_.each(docklets,function(docklet, index) {
-						<tr>
-							<td> <%= index+1 %> </td>
-							<td> <%= docklet.title %> </td>
-							<td> <%= docklet.host %> </td>
-							<td> <%= docklet.port %> </td>
-							<td> 
-
-							</td>
-						</tr>	
-					})
-				%>
-			</tbody>
-
-		</table>
-
 	script( type="text/template", id="dockletRowTemplate").
 		<tr>
 			<td> <%= index %> </td>
@@ -87,47 +59,36 @@ block content
 						<% }) %>
 
 					</tbody>
-				</table>
+			</table>
 			</div>
 		</div>
 
-	script( type="text/template", id="explorePanelTemplate").
-		<div class="page-header" id="panel_<%= id %>">
-			<h4>Docklet Host: 
-				<span class="label label-primary">
-					<%= title %> (<%= host %>:<%=port%>)
-				<span>
-				<small class="label label-default"><%= Version %></small>
-			</h4>
-			<hr/>
-			<div>
-					<div >
-						<h2 class="text-center"> 
-							Monitor Docker Events 
-							<fieldset>
-								<input type="textbox" class="datepicker" />
-								<input type="textbox" class="timepicker" />
-								<a href="#"  id="dockerEvents" docker-id="<%= id %>">Start </a>
-							</fieldset>
-						</h2>
-					<div class="pull-right">
-						<div class="count pull-right">
-							<span> <%= Containers %> </span>
-							Container
-						</div>
-						<div class="count pull-right">
-							<span> <%= Images %> </span>
-							Images
-						</div>	
-					</div>						
-				
-				</div>
-				<div class="clearfix"></div>	
-			</div>
+	script( type="text/template", id="explorePanelTemplate")
+		div(class="page-header", id!= "<%='panel_'+ id %>" )
+			h2 
+				| Docklet Host:
+				span.label.label-default
+					| <%= title %> (<%= host %>:<%=port%>)
+					|v<%= Version %>
 
-			<%= imagesTable %>
+			hr
+			div
+			.col-md-8.text-center.form-inline
+				label  Monitor Docker Events  
+				input.form-control.datepicker(type='textbox')
+				input.form-control.timepicker(type='textbox', size="10")
+				a#dockerEvents(href='#', docker-id!="<%= id %>")
+					span(class="glyphicon glyphicon-circle-arrow-right")
+			.col-md-4
+				.count.pull-right
+					span <%= Containers %>
+					| Container
+				.count.pull-right
+					span  <%= Images %>
+					| Images
+			.clearfix
+		<%= imagesTable %>
 
-		</div>
 
 
 	script( type="text/template", id="inspectImageTemplate").
@@ -141,7 +102,7 @@ block content
 	script( type="text/template", id="floatingWindowTemplate")
 		div( class="panel panel-primary floatingWindow" id="terminal001")
 			div.panel-heading
-				h4.panel-title Image Info
+				h4.panel-title <%= title %>
 					button( class="pull-right glyphicon glyphicon-remove closeFloatingWindow" aria-hidden="true" onClick="$('#terminal').parent().toggleClass('hidden');" style="color: rgb(73, 68, 68);")  
 					button( class="glyphicon glyphicon-minus pull-right minFloatingWindow" aria-hidden="true" style="color: rgb(73, 68, 68);" )
 			div.panel-body
@@ -209,6 +170,14 @@ block content
 
 	div.floatingWindowsWrapper
 		ul.floatingWindowList
+
+	div( class="panel panel-primary floatingWindow" id="dockerEventWindow")
+		div.panel-heading
+			h4.panel-title <%= title %>
+				button( class="pull-right glyphicon glyphicon-remove closeFloatingWindow" aria-hidden="true" onClick="$('#terminal').parent().toggleClass('hidden');" style="color: rgb(73, 68, 68);")  
+				button( class="glyphicon glyphicon-minus pull-right minFloatingWindow" aria-hidden="true" style="color: rgb(73, 68, 68);" )
+		div.panel-body
+			div.outputWindow
 
 
 	.modal.fade#docklets_new

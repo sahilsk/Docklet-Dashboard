@@ -158,21 +158,24 @@ Docklet.prototype.onevents = function( spark, data, fn){
 				}else{
 
 					var  connection = require("../../server")
-					stream.setEncoding('utf-8');
-					//stream.pipe(spark);
-					/*
-					var through  = require("through")
-					var a = through(function write(data) {
-						    this.queue(data) //data *must* not be null
-						  },
-						  function end () { //optional
-						    this.queue(null)
-						  })
+					//stream.setEncoding('utf-8');
+					var prettyjson = require('prettyjson');
+
+					var JSONStream = require('JSONStream')
+					var es = require("event-stream");
+					var through = require("through");
+					stream.pipe(JSONStream.parse())
+						   .pipe(es.mapSync(function (data) {
+             	    	  console.log( prettyjson.render(data))
+  						   	connection.primus.write(data);
+  						  // 	spark.write(data);
+  						   //	spark.send("event",data);
+  						   	//spark.write("event", data);
+
+					}))
 
 
-					a.pipe(spark)
-					*/
-					stream.pipe(connection.primus)
+					//stream.pipe(connection.primus)
 					//a.write('Hello Wrld');
 					resData.data = "STREAMING";
 					fn(resData);

@@ -19276,10 +19276,46 @@ socket.on('open', function () {
 });
   
 socket.on("data", function(stream){
-  console.log("Data:::::::::::::" + stream.toString()) ;
+  console.log("Data:::::::::" + stream) ;
 
-    //addFloatingWindow(stream.toString())
+  if( typeof stream === "object"){
+    var data = stream;
+    console.log(data);
+    var outputArea = $("#dockerEventWindow .outputWindow");
+    if( $(outputArea).find("table").size() ==0 ){
+        
+      // add table
+        $(outputArea).append("<table></table>");
 
+        var $table = $(outputArea).find("table");
+        var str = "<thead><tr>"
+
+      //add header
+      for(key in data){
+          console.log("Keyyyyyyyyy: ",key); 
+          str += "<th>" +key + "</th>"
+      }
+      str += "</tr></thead>"
+
+      $table.append( str);
+      $table.append("<tbody></tbody>");
+    }
+    
+    var $tbody = $(outputArea).find("tbody");
+
+    var str ="<tr>";
+    for( key in data){
+      str +=  "<td>" + data[key] +" </td>";
+    }
+    str = "</tr>"
+
+    $tbody.append(str);
+  }
+
+});
+
+socket.on("event", function(data){
+    console.log("Event:::::::::::::" + stream.status) ;
 
 })
 
@@ -19510,7 +19546,7 @@ var renderImageInfo =  function(){
       console.log( "Error inspecting image: ", res.error);
     }else{
       console.log( selectedDockerHost);
-      addFloatingWindow(res.data)
+      addFloatingWindow({title:"Image: "+imageId, result: res.data })
 
     }
 
@@ -19528,7 +19564,8 @@ FLOATING WINDOW
 *****************/
 
 var addFloatingWindow = function(data){
-  var floatingWindow = _.template( $("#floatingWindowTemplate").html(),{} );
+
+  var floatingWindow = _.template( $("#floatingWindowTemplate").html(),{title:data.title} );
 
 
   floatingWindow = $("<li></li>").append(floatingWindow);
@@ -19537,11 +19574,9 @@ var addFloatingWindow = function(data){
 
   var term = require('hypernal')();
   term.appendTo(".floatingWindowList li:last-child .outputWindow" );
-  term.write(data);  
+  term.write(data.result);  
 
 }
-
-
 
 var minimizeWindow = function(){
   console.log("Minimizing window...")
