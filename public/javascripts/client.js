@@ -19,9 +19,13 @@ socket.on('open', function () {
   
 socket.on("data", function(stream){
   console.log("Data:::::::::" + stream.toString()) ;
+
+  if( stream.toString().length == 0)
+    return;
+
   $("#dockerEventWindow .outputWindow").append("<hr/>" );
   var term = require('hypernal')();
-  term.appendTo("#dockerEventWindow .outputWindow" );
+  term.appendTo("#dockerEventWindow .outputWindow");
   term.write(stream); 
 
 });
@@ -203,7 +207,7 @@ var $dockletContainer = $("#dockletsTable tbody");
     var date = $("#panel_"+id).find(".datepicker").val();
     var time = $("#panel_"+id).find(".timepicker").val();
     var datetime = Date.parse( date+" "+time);
-    datetime= 1385863200000;
+    //datetime= 1385863200000;
     if( isNaN(datetime) ){
       alert("Invalid date: " + date+" "+time);
       return;

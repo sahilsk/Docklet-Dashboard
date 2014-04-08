@@ -166,6 +166,8 @@ Docklet.prototype.onevents = function( spark, data, fn){
 					var through = require("through");
 					stream.pipe(JSONStream.parse())
 						  .pipe(es.mapSync(function (data) {
+						  		data.time = (new Date( parseInt(data.time)*1000)).toString()
+						  		console.log( ":::::::::::" + data.time)
 								console.log( prettyjson.render(data))
 								connection.primus.write(prettyjson.render(data));
 
