@@ -111,8 +111,33 @@ Docklet.prototype.ongetContainers = function( spark, data, fn){
 		resData.error = error;
 		fn( resData  );		
 	}
-
 }
+
+Docklet.prototype.ongetContainerProcesses = function( spark, data, fn){
+	var resData = { error: null, data:null};
+
+	try{
+
+		dockerHost = data.dockerHost;
+		var docker = new require('dockerode')({host: "http://"+dockerHost.host, port: dockerHost.port});
+		docker.listContainers(data.containerId, function(err, processes) {
+			if(err) {
+				console.log("Error caught: " + err);
+				resData.error = err;
+				fn( resData );
+			}else{
+				console.log("processes: ", processes);
+				resData.data = processes;
+				fn(resData);
+			}
+		});
+	} catch(error){
+		console.log("Error caught: " + error);
+		resData.error = error;
+		fn( resData  );		
+	}
+}
+
 
 Docklet.prototype.onexplore  = function( spark, id, fn){
 
@@ -209,8 +234,6 @@ Docklet.prototype.onevents = function( spark, data, fn){
 		}
 	})
 }
-
-
 
 Docklet.prototype.oninspectImage = function(spark, data, fn){
 	var resData = { error: null, data:null};

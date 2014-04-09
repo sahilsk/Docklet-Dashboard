@@ -101,8 +101,8 @@ $("#newDockletForm").on( "submit", function( event ) {
         jRes.data.index = $("#dockletsTable").find("tbody").find("tr").size() +1 ;
 
         var dockletRow = _.template( $("#dockletRowTemplate").html(),  jRes.data  );
-        $(dockletRow).find("a.action-refresh").on("click", refreshDocklet);
-        $(dockletRow).find("a.action-delete").on("click", deleteDocklet);
+       // $(dockletRow).find("a.action-refresh").on("click", refreshDocklet);
+       // $(dockletRow).find("a.action-delete").on("click", deleteDocklet);
 
 
         console.log( dockletRow );
@@ -245,7 +245,6 @@ var $dockletContainer = $("#dockletsTable tbody");
 /******************** IMAGE TABLE *****************/
 
 
-
 var renderImageInspectWindow =  function(){
   var imageId = $(this).text();
 
@@ -299,11 +298,7 @@ var listContainers = function(e){
   if( !isNaN(datetime) ){
     data.opts[period] = datetime/1000;
   }
-
-
-
   console.log( "Fetching containers: ",  data.opts)
-
   Docklet.getContainers( data, function(res){
 
     if(res.error){
@@ -321,7 +316,6 @@ var listContainers = function(e){
       $("#dynDataPlaceholder").find(".containersWrapper").append( $containerTable);
 
     }
-
   });
 }
 
@@ -347,7 +341,51 @@ var renderContainerInspectWindow =  function(){
 }
 
 
-$("#dynDataPlaceholder").on("click", "#containersTable tr td:nth-child(2) a" , renderContainerInspectWindow);
+var listProcesses = function(e){
+  e.preventDefault();
+
+  var containerId = $(this).attr("container-id");
+
+  var data = {
+    dockerHost : selectedDockerHost,
+    containerId:containerId
+  }
+  console.log("fetching processes running inside %s on %s %s",containerId,  selectedDockerHost.host, selectedDockerHost.port); 
+
+  Docklet.getContainerProcesses( data, function(res){
+
+    if(res.error){
+      console.log( "Error fetching containers: ", res.error);
+    }else{
+          
+      console.log("Processes: ", res.data);
+      return;
+      var $containerTable = _.template( $("#containerTableTemplate").html(),{containers: res.data} );
+      var oldContainerTable = $("#dynDataPlaceholder").find("#containersTable");
+
+      if( oldContainerTable.length  > 0  ){
+        $(oldContainerTable).remove();
+      }
+      $("#containersTable").remove();
+      $("#dynDataPlaceholder").find(".containersWrapper").append( $containerTable);
+
+    }
+  });
+}
+
+
+  //BIND 
+    //LOAD PROCESSES
+    $("#dynDataPlaceholder").on("click", "#containersTable tr td:last-child a" , listProcesses);
+
+
+
+/****************** PROCESSES TABLE *************/
+
+
+
+
+
 
 
 /*****************
