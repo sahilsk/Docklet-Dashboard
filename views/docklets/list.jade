@@ -27,9 +27,8 @@ block content
 			</td>
 		</tr>
 
-
 	script( type="text/template", id="imageTableTemplate").
-		<div class="panel panel-default" >
+		<div class="panel panel-default" id="imagesTable">
 			<div class="panel-heading" >
 				<span class="glyphicon glyphicon-list-alt"> </span>
 				&nbsp; Images List 
@@ -63,19 +62,69 @@ block content
 			</div>
 		</div>
 
+	script( type="text/template", id="containerTableTemplate").
+		<div class="panel panel-default" id="containersTable">
+			<div class="panel-heading" >
+				<span class="glyphicon glyphicon-list-alt"> </span>
+				&nbsp; Containers List 
+			</div>
+			<div class="panel-body table-responsive">
+				<table class="table table-striped table-borderedf imageTable">
+					<thead>
+						<tr>
+							<th> # </th>
+							<th> ID  </th>
+							<th> Image  </th>
+							<th> Command  </th>
+							<th> Created  </th>
+							<th> Status  </th>
+							<th> Ports  </th>
+							<th> SizeRw  </th>
+							<th> SizeRootFs  </th>
+							<th> Names  </th>
+
+
+						</tr>
+					</thead>
+					<tbody>
+						<% _.each( containers, function(container,index){ %>
+							<tr>
+								<td> <%= index + 1 %> </td>
+								<td> <a href="javascritp:void(0);", container-id="<%= container.Id %>" ><span class="label label-info" title="<%= container.Id %>"><%= container.Id.substring(0, 14) %> </span> </a>  </td>
+								<td> <%= container.Image %> </td>
+								<td> <%= container.Command %> </td>
+								<td> <%= container.Created %> </td>
+								<td> <%= container.Status %> </td>
+								<td> <%= container.Ports %> </td>
+								<td> <%= container.SizeRw %> </td>
+								<td> <%= container.SizeRootFs %> </td>
+								<td> <%= container.Names %> </td>
+								<td>
+									<a href="#"   class="label label-primary action-refresh" docker-id="<%= id %>" >
+										<span class="glyphicon glyphicon-refresh"  data-toggle="tooltip" data-placement="bottom" title="Refresh"> </span>
+									</a> &nbsp;
+								</td>
+							</tr>
+						<% }) %>
+
+					</tbody>
+			</table>
+			</div>
+		</div>
+
+
 	script( type="text/template", id="explorePanelTemplate")
-		div(class="page-header", id!="<%='panel_'+ id %>" )
+		div(class="page-header explorePanel", id!="<%='panel_'+ id %>" )
 			h4.alert.alert-info
 				|<%= title %> (<%= host %>:<%=port%>)
 				span(class="badge pull-right") 
 					|v<%= Version %>
 
-			hr
 			div
-			.col-md-8.form-inline
+			.col-md-8.form-inline( style="line-height:50px;" )
 				label  Monitor Docker Events  
-				input.form-control.datepicker(type='textbox')
-				input.form-control.timepicker(type='textbox', size="10")
+				input.form-control.datepicker(type="textbox", placeholder="eg. 31 March, 2014") 
+				input.form-control.timepicker(type="textbox", placeholder="eg. 4:30 AM", size="10")
 				a#dockerEvents(href='#', docker-id!="<%= id %>")
 					span(class="glyphicon glyphicon-circle-arrow-right")
 			.col-md-4
@@ -86,8 +135,32 @@ block content
 					span  <%= Images %>
 					| Images
 			.clearfix
+			hr
+			//IMAGES TABLE
 			<%= imagesTable %>
-
+			//LOAD CONTAINERS 
+			.containersWrapper
+				.row
+					.col-xs-7.col-md-5
+						button( type="button", class="btn btn-default", id="loadContainers")
+							| Load Containers			
+					.col-xs-11.col-md-7
+						form.loadContainerForm.form-inline
+							select(class="form-control", name="period")
+								option(value="before") Before
+								option(value="after")  Since
+							.form-group
+								input.form-control.datepicker(type="textbox", name="date" ,placeholder="eg. 31 March, 2014")
+								input.form-control.timepicker(type="textbox", name="time", placeholder="eg. 4:30 AM", size="10")
+							| |
+							.checkbox
+								label
+									input( type="checkbox", name="all")
+									| all?
+								label
+									input( type="checkbox", name="size")
+									| Include Size?
+				hr
 
 
 	script( type="text/template", id="inspectImageTemplate").
@@ -99,11 +172,11 @@ block content
 
 
 	script( type="text/template", id="floatingWindowTemplate")
-		div( class="panel panel-primary floatingWindow" )
+		div( class!="panel <%= cssClass %> floatingWindow" )
 			div.panel-heading
 				h4.panel-title <%= title %>
 					button( class="pull-right glyphicon glyphicon-remove closeFloatingWindow" aria-hidden="true" style="color: rgb(73, 68, 68);")  
-					button( class="glyphicon glyphicon-minus pull-right minFloatingWindow" aria-hidden="true" style="color: rgb(73, 68, 68);" )
+					button( class!="glyphicon glyphicon-minus pull-right minFloatingWindow " aria-hidden="true" style="color: rgb(73, 68, 68);" )
 			div.panel-body
 				div.outputWindow
 
@@ -162,10 +235,7 @@ block content
 					|No docklet added yet. 
 					a(href="#docklets/new", id="newDocklet", class="btn btn-info	") Add new docklet
 	
-
-
 	div(class="container-fluid" id="dynDataPlaceholder")
-
 
 	div.floatingWindowsWrapper
 		.floatingWindowList
@@ -176,7 +246,6 @@ block content
 				button( class="glyphicon glyphicon-minus pull-right minFloatingWindow" aria-hidden="true" style="color: rgb(73, 68, 68);" )
 		div.panel-body.hidden
 			div.outputWindow
-
 
 	.modal.fade#docklets_new
 		.modal-dialog
@@ -202,6 +271,3 @@ block content
 					.modal-footer
 						button.btn.btn-default(type='button', data-dismiss='modal', onClick=("javascript:void(0)")) Close
 						button.btn.btn-primary(type='submit') Save changes
-
-
-	

@@ -88,6 +88,31 @@ Docklet.prototype.ongetImages = function( spark, data, fn){
 	}
 }
 
+Docklet.prototype.ongetContainers = function( spark, data, fn){
+	var resData = { error: null, data:null};
+
+	try{
+
+		dockerHost = data.dockerHost;
+		var docker = new require('dockerode')({host: "http://"+dockerHost.host, port: dockerHost.port});
+		docker.listContainers(data.opts, function(err, containers) {
+			if(err) {
+				console.log("error caught: " + err);
+				resData.error = err;
+				fn( resData );
+			}else{
+				console.log("containers: ", containers);
+				resData.data = containers;
+				fn(resData);
+			}
+		});
+	} catch(error){
+		console.log("error caught: " + error);
+		resData.error = error;
+		fn( resData  );		
+	}
+
+}
 
 Docklet.prototype.onexplore  = function( spark, id, fn){
 
@@ -209,6 +234,29 @@ Docklet.prototype.oninspectImage = function(spark, data, fn){
 	});
 }
 
+Docklet.prototype.oninspectContainer = function(spark, data, fn){
+	var resData = { error: null, data:null};
 
+	var dockerHost = data.dockerHost;
+	var docker = new require('dockerode')({host: "http://"+ dockerHost.host, port: dockerHost.port});
+
+	var prettyjson = require('prettyjson');
+
+	console.log("Inspecting container: ", data.containerId)
+
+	var container = docker.getContainer(data.containerId);
+	container.inspect( function(err,res){
+		if(err){
+			resData.error = err;
+			fn(resData);
+		}{
+			console.log(res);
+			var pData = prettyjson.render( res);
+			resData.data = pData;
+			console.log( pData);
+			fn(resData);
+		}
+	});
+}
 
 module.exports = Docklet;

@@ -171,12 +171,13 @@ var $dockletContainer = $("#dockletsTable tbody");
 
   var exploreDocklet = function( event){
     event.preventDefault(); 
+
     $row = $(this).closest("tr");
     $tdArray = $row.find("td"); 
     var docker_id = $(this).attr("docker-id");
 
     var id = $(this).attr("docker-id");
-
+ 
     Docklet.explore(id, function(res){
       if(res.error){
         console.log("Error: ", res.error)
@@ -189,7 +190,7 @@ var $dockletContainer = $("#dockletsTable tbody");
         $explorePanel = _.template( $("#explorePanelTemplate").html(), res.data );
 
         $("#panel_"+id).remove();
-        $("#dynDataPlaceholder").append($explorePanel);
+        $("#dynDataPlaceholder").html($explorePanel);
         $(".datepicker").pickadate();
          $(".timepicker").pickatime();
 
@@ -245,7 +246,7 @@ var $dockletContainer = $("#dockletsTable tbody");
 
 
 
-var renderImageInfo =  function(){
+var renderImageInspectWindow =  function(){
   var imageId = $(this).text();
 
   console.log("fetch detailed image info of (%s) %j", imageId, selectedDockerHost); 
@@ -269,10 +270,84 @@ var renderImageInfo =  function(){
   });
 }
 
+$("#dynDataPlaceholder").on("click", ".imageTable tr td:nth-child(2)" , renderImageInspectWindow);
 
-$("#dynDataPlaceholder").on("click", ".imageTable tr td:nth-child(2)" , renderImageInfo);
+
+/****************** CONTAINER TABLE *************/
+
+var listContainers = function(e){
+  e.preventDefault();
+
+  console.log("fetching contianers from: %s:%s", selectedDockerHost.host, selectedDockerHost.port); 
+
+  var data = {
+    dockerHost : selectedDockerHost,
+    opts : {
+       all :$("form.loadContainerForm").find('[name="all"]').is(":checked"),
+       size :$("form.loadContainerForm").find('[name="all"]').is(":checked")
+    }   
+  }
+
+  var period = $(".loadContainerForm").find("[name='period']").val();
 
 
+  var date = $(".loadContainerForm").find("[name='date']").val();
+  var time = $(".loadContainerForm").find("[name='time']").val();
+
+  var datetime = Date.parse( date+" "+time);
+  //datetime= 1385863200000;
+  if( !isNaN(datetime) ){
+    data.opts[period] = datetime/1000;
+  }
+
+
+
+  console.log( "Fetching containers: ",  data.opts)
+
+  Docklet.getContainers( data, function(res){
+
+    if(res.error){
+      console.log( "Error fetching containers: ", res.error);
+    }else{
+        
+      console.log("Containers: ", res.data)
+      var $containerTable = _.template( $("#containerTableTemplate").html(),{containers: res.data} );
+      var oldContainerTable = $("#dynDataPlaceholder").find("#containersTable");
+
+      if( oldContainerTable.length  > 0  ){
+        $(oldContainerTable).remove();
+      }
+      $("#containersTable").remove();
+      $("#dynDataPlaceholder").find(".containersWrapper").append( $containerTable);
+
+    }
+
+  });
+}
+
+var renderContainerInspectWindow =  function(){
+  var containerId = $(this).attr("container-id").trim();
+
+  console.log("Inspecting container: <%s> on ", containerId, selectedDockerHost); 
+
+  var data = {
+    containerId : containerId,
+    dockerHost : selectedDockerHost
+  };
+
+  Docklet.inspectContainer( data, function(res){
+    if(res.error){
+      console.log( "Error inspecting container: ", res.error);
+    }else{
+      console.log( selectedDockerHost);
+      addFloatingWindow({title:"Container: "+ containerId.substring(0, 14) , result: res.data, cssClass:"panel-info" })
+    }
+
+  });
+}
+
+
+$("#dynDataPlaceholder").on("click", "#containersTable tr td:nth-child(2) a" , renderContainerInspectWindow);
 
 
 /*****************
@@ -280,14 +355,17 @@ FLOATING WINDOW
 *****************/
 
 var addFloatingWindow = function(data){
-
-  var floatingWindow = _.template( $("#floatingWindowTemplate").html(),{title:data.title} );
+  var cssClass = "panel-primary";
+  if( data.hasOwnProperty( "cssClass")){
+    cssClass = data.cssClass;
+  }
+  var floatingWindow = _.template( $("#floatingWindowTemplate").html(),{title:data.title, cssClass:cssClass } );
 
   console.log( floatingWindow);
-  $(floatingWindow).appendTo(".floatingWindowList");
+  $(floatingWindow).prependTo(".floatingWindowList");
 
   var term = require('hypernal')();
-  term.appendTo(".floatingWindowList .floatingWindow:last-child .outputWindow" );
+  term.appendTo(".floatingWindowList .floatingWindow:first-child .outputWindow" );
   term.write(data.result);  
 
 }
@@ -316,6 +394,7 @@ $("body").on("click", ".minFloatingWindow", minimizeWindow );
 $("body").on("click", ".closeFloatingWindow", closeFloatingWindow );
 
 
+$("body").on("click", "#loadContainers", listContainers)
 
 
 
