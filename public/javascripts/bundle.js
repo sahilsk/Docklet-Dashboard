@@ -19374,16 +19374,19 @@ $("#newDockletForm").on( "submit", function( event ) {
         jRes.data.index = $("#dockletsTable").find("tbody").find("tr").size() +1 ;
 
         var dockletRow = _.template( $("#dockletRowTemplate").html(),  jRes.data  );
-       // $(dockletRow).find("a.action-refresh").on("click", refreshDocklet);
-       // $(dockletRow).find("a.action-delete").on("click", deleteDocklet);
-
-
         console.log( dockletRow );
-        $("#dockletsTable").find("tbody").append( dockletRow );
+
+
+//        $("#dockletsTable").find("tbody").append( dockletRow );
           
         $("#actionStatus").html( jRes.data.title + " created successfully!!!");
         $("#actionStatus").removeClass("alert-danger").addClass("alert-success").removeClass("hidden");
-        $("#docklets_new").modal("hide");
+      
+        setTimeout( function(){
+          $("#docklets_new").modal("hide");
+          window.location.href= window.location.href;
+        }, 1000)   ;
+     
      }
 
   } );
