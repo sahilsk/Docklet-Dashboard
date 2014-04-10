@@ -9,8 +9,8 @@ var Validator = require("../lib/validation.js");
 /*
 
 ###########  Add New docklet
-zadd docklets timestamp ID// docklet LIST
-hmset docklet:id id ID  host localhost port 4340
+zadd docklets timestamp ID // docklet LIST
+hmset docklet:id id ID  host localhost port 4340 healthCheckPath "/path/url"
 
 ###########  Retrive docklet
 zscore docklets id == nil  >> Return record not found
@@ -24,7 +24,6 @@ zrem docklets id
 DATABASE
 ========================
 zadd docklets 1395306635123 e50e1468-b057-41b0-8cb7-7a99c6ad26b6
-
 HMSET docklet:e50e1468-b057-41b0-8cb7-7a99c6ad26b6 id e50e1468-b057-41b0-8cb7-7a99c6ad26b6   host localhost  port 4340
 
 
@@ -52,6 +51,10 @@ var Docklet = {
 		port: {
 			type: "number",
 			validations:["notEmpty"]
+		},
+		healthCheckPath:{
+			type: "string",
+			validations:[]			
 		}
 	},
 	all: function(callback){

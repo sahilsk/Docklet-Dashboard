@@ -96,7 +96,9 @@ $("#newDockletForm").on( "submit", function( event ) {
   var data = {
     "title" : $(this).find("#title").val(),
   	"host" :   	$( this ).find('#host').val(),
-  	"port" : parseInt($(this).find("#port").val())
+  	"port" : parseInt($(this).find("#port").val()),
+    "healthCheckPath" :   $( this ).find('#healthURL').val()
+
   }
   console.log( data );
 
@@ -131,7 +133,7 @@ $("#newDockletForm").on( "submit", function( event ) {
   } );
 });
 
-// Bind actions to docklets 
+/**************** DOCKLETS *******************/
 
 var $dockletContainer = $("#dockletsTable tbody");
   
@@ -165,7 +167,6 @@ var $dockletContainer = $("#dockletsTable tbody");
     var id = $(this).attr("docker-id");
     $row = $(this).closest("tr");
     $tdArray = $row.find("td");
-   
     $row.addClass("danger");
     console.log("Request to delete ", id)
 
@@ -184,9 +185,14 @@ var $dockletContainer = $("#dockletsTable tbody");
     } 
   }
 
+  // list images
   var exploreDocklet = function( event){
     event.preventDefault(); 
 
+    //Highlight selected container
+    $(this).closest("table").find("tr").removeClass("info");
+    $(this).closest("tr").addClass("info")
+  
     $row = $(this).closest("tr");
     $tdArray = $row.find("td"); 
     var docker_id = $(this).attr("docker-id");
@@ -211,6 +217,16 @@ var $dockletContainer = $("#dockletsTable tbody");
 
          //SET SELECTED DOCKERHOST INSTANCE
          selectedDockerHost = res.data.dockerHost
+
+      // SCROLL TO IMAGE TABLE
+      var $imagesTable =  $("#imagesTable");
+      $imagesTable.addClass("panel-success");
+      //Scroll to process table
+      $("body").animate({
+        scrollTop: $imagesTable.offset().top 
+       }, 1000, function() {
+            $imagesTable .removeClass("panel-success");
+      });            
 
       }
     });
@@ -252,7 +268,6 @@ var $dockletContainer = $("#dockletsTable tbody");
      $dockletContainer.on("click", "a.action-explore", exploreDocklet);
    //DELETE DOCKLET
      $dockletContainer.on("click", "a.action-delete", deleteDocklet);
-
      $("body").on('click', "#dockerEvents", monitorEvents)
 
 
@@ -313,7 +328,6 @@ var listContainers = function(e){
   }
   console.log( "Fetching containers: ",  data.opts)
   Docklet.getContainers( data, function(res){
-
     if(res.error){
       console.log( "Error fetching containers: ", res.error);
     }else{
@@ -323,6 +337,15 @@ var listContainers = function(e){
       //remove old containers
       $("#dynDataPlaceholder").find("#containersTable").remove();
       $("#dynDataPlaceholder").find(".containersWrapper").append( $containerTable);
+
+      var $containerTable = $("#containersTable");
+      $containerTable.addClass("panel-success");
+      //Scroll to process table
+      $("body").animate({
+        scrollTop:  $containerTable.offset().top 
+       }, 1000, function() {
+            $containerTable.removeClass("panel-success");
+      });      
 
     }
   });
@@ -356,6 +379,13 @@ $("#dynDataPlaceholder").on("click", "#containersTable tr td:nth-child(2) a" , r
 var listProcesses = function(e){
   e.preventDefault();
 
+
+  //Highlight selected container
+  $(this).closest("table").find("tr").removeClass("info");
+  $(this).closest("tr").addClass("info")
+
+
+
   var containerId = $(this).attr("container-id");
 
   var data = {
@@ -382,21 +412,20 @@ var listProcesses = function(e){
       $("#processesTable").remove();
       $("#dynDataPlaceholder").append( $psTable);
 
+      $("#processesTable").addClass("panel-success");
+      //Scroll to process table
+      $("body").animate({
+        scrollTop: $("#processesTable").offset().top 
+       }, 1000, function() {
+           $("#processesTable").removeClass("panel-success");
+      });
+
     }
   });
 }
 
   //BIND 
     $("#dynDataPlaceholder").on("click", "#containersTable tr td:last-child a" , listProcesses);
-
-
-
-
-
-
-
-
-
 
 /*****************
 FLOATING WINDOW
@@ -418,7 +447,8 @@ var addFloatingWindow = function(data){
 
 }
 
-var minimizeWindow = function(){
+var minimizeWindow = function(e){
+  e.preventDefault();
   console.log("Minimizing window...")
   var floatingWindow = $(this).closest(".floatingWindow");
   
@@ -431,19 +461,24 @@ var minimizeWindow = function(){
   } else{
     $(floatingWindow).width("600px");
   }
-
 }
+var clearOutputWindow = function(e){
+  e.preventDefault();
+  console.log("clearing output window..")
+  console.log( $(this))
+ $(this).parent().parent().next().find(".outputWindow").text("");
+}
+
 var closeFloatingWindow = function(){
   console.log("closing window...");
   $(this).closest(".floatingWindow").remove();
 }
 
-$("body").on("click", ".minFloatingWindow", minimizeWindow );
-$("body").on("click", ".closeFloatingWindow", closeFloatingWindow );
-
-
-$("body").on("click", "#loadContainers", listContainers)
-
+// BIND
+  $("body").on("click", ".minFloatingWindow", minimizeWindow );
+  $("body").on("click", ".clearOutputWindow", clearOutputWindow );
+  $("body").on("click", ".closeFloatingWindow", closeFloatingWindow );
+  $("body").on("click", "#loadContainers", listContainers)
 
 
 Backbone.history.start();
