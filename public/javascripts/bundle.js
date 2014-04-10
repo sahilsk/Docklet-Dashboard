@@ -19385,7 +19385,7 @@ $("#newDockletForm").on( "submit", function( event ) {
         setTimeout( function(){
           $("#docklets_new").modal("hide");
           window.location.href= window.location.href;
-        }, 1000)   ;
+        }, 1000);
      
      }
 
