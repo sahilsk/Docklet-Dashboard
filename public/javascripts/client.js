@@ -288,8 +288,6 @@ var listContainers = function(e){
   }
 
   var period = $(".loadContainerForm").find("[name='period']").val();
-
-
   var date = $(".loadContainerForm").find("[name='date']").val();
   var time = $(".loadContainerForm").find("[name='time']").val();
 
@@ -307,12 +305,8 @@ var listContainers = function(e){
         
       console.log("Containers: ", res.data)
       var $containerTable = _.template( $("#containerTableTemplate").html(),{containers: res.data} );
-      var oldContainerTable = $("#dynDataPlaceholder").find("#containersTable");
-
-      if( oldContainerTable.length  > 0  ){
-        $(oldContainerTable).remove();
-      }
-      $("#containersTable").remove();
+      //remove old containers
+      $("#dynDataPlaceholder").find("#containersTable").remove();
       $("#dynDataPlaceholder").find(".containersWrapper").append( $containerTable);
 
     }
@@ -359,6 +353,8 @@ var listProcesses = function(e){
 
     if(res.error){
       console.log( "Error fetching containers: ", res.error);
+      addFloatingWindow({title:"ERROR" , result: res.error, cssClass:"panel-danger" })
+
     }else{
           
       var templateData  ={
@@ -367,10 +363,6 @@ var listProcesses = function(e){
       }
       console.log( templateData);
       var $psTable = _.template( $("#psTableTemplate").html(),templateData );
-
-      //remove old containers
-      var oldContainerTable = $("#dynDataPlaceholder").find("#containersTable");
-      $("#dynDataPlaceholder").find("#containersTable").remove();
 
       $("#processesTable").remove();
       $("#dynDataPlaceholder").append( $psTable);

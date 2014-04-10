@@ -14,12 +14,13 @@ exports.list = function(req, res){
 			console.log("Error listing docklets: ", err)
 			session.messages = { "errors": "err"}
 		}else{
+			console.log( "Req.url: " + req.url);
 			var data = {
 				docklets : err?[]: list,
 				title: "Docklets",
 				page: req.url,
 				nav: {
-				  'Docklet Dashboard': '/docklets',
+				  'Docklets': '/docklets',
 				  'Dashboard': '/'
 				}
 			};

@@ -125,7 +125,9 @@ Docklet.prototype.ongetContainerProcesses = function( spark, data, fn){
 		container.top( function(err,processes){
 			if(err) {
 				console.log("Error caught: " + err);
-				resData.error = err;
+				var prettyjson = require('prettyjson');
+
+				resData.error = prettyjson.render( err);
 				fn( resData );
 			}else{
 				console.log("processes: ", processes);
@@ -212,7 +214,6 @@ Docklet.prototype.onevents = function( spark, data, fn){
 					var  connection = require("../../server")
 					//stream.setEncoding('utf-8');
 					var prettyjson = require('prettyjson');
-
 					var JSONStream = require('JSONStream')
 					var es = require("event-stream");
 					var through = require("through");
