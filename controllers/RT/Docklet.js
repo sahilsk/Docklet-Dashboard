@@ -120,7 +120,9 @@ Docklet.prototype.ongetContainerProcesses = function( spark, data, fn){
 
 		dockerHost = data.dockerHost;
 		var docker = new require('dockerode')({host: "http://"+dockerHost.host, port: dockerHost.port});
-		docker.listContainers(data.containerId, function(err, processes) {
+		
+		var container = docker.getContainer(data.containerId);
+		container.top( function(err,processes){
 			if(err) {
 				console.log("Error caught: " + err);
 				resData.error = err;

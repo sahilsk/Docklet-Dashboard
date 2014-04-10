@@ -340,6 +340,9 @@ var renderContainerInspectWindow =  function(){
   });
 }
 
+$("#dynDataPlaceholder").on("click", "#containersTable tr td:nth-child(2) a" , renderContainerInspectWindow);
+
+/****************** PROCESSES TABLE *************/
 
 var listProcesses = function(e){
   e.preventDefault();
@@ -358,16 +361,19 @@ var listProcesses = function(e){
       console.log( "Error fetching containers: ", res.error);
     }else{
           
-      console.log("Processes: ", res.data);
-      return;
-      var $containerTable = _.template( $("#containerTableTemplate").html(),{containers: res.data} );
-      var oldContainerTable = $("#dynDataPlaceholder").find("#containersTable");
-
-      if( oldContainerTable.length  > 0  ){
-        $(oldContainerTable).remove();
+      var templateData  ={
+        titles:  res.data.Titles,
+        processes : res.data.Processes
       }
-      $("#containersTable").remove();
-      $("#dynDataPlaceholder").find(".containersWrapper").append( $containerTable);
+      console.log( templateData);
+      var $psTable = _.template( $("#psTableTemplate").html(),templateData );
+
+      //remove old containers
+      var oldContainerTable = $("#dynDataPlaceholder").find("#containersTable");
+      $("#dynDataPlaceholder").find("#containersTable").remove();
+
+      $("#processesTable").remove();
+      $("#dynDataPlaceholder").append( $psTable);
 
     }
   });
@@ -380,7 +386,6 @@ var listProcesses = function(e){
 
 
 
-/****************** PROCESSES TABLE *************/
 
 
 
