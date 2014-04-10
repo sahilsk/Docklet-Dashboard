@@ -49,7 +49,7 @@ block content
 						<% _.each( images, function(image,index){ %>
 							<tr>
 								<td> <%= index + 1 %> </td>
-								<td> <a href="javascritp:void(0);" ><span class="label label-primary"><%= image.Id.substring(0, 14) %> </span> </a>  </td>
+								<td> <a href="javascritp:void(0);", image-id="<%= image.Id %>" ><span class="label label-primary"><%= image.Id.substring(0, 14) %> </span> </a>  </td>
 								<td> <%= image.RepoTags %> </td>
 								<td> <%= image.Created %>  </td>
 								<td> <%= image.Size %> </td>
@@ -305,3 +305,11 @@ block content
 					.modal-footer
 						button.btn.btn-default(type='button', data-dismiss='modal', onClick=("javascript:void(0)")) Close
 						button.btn.btn-primary(type='submit') Save changes
+ 
+	.modal.fade#smallModalWindow(tabindex='-1', role='dialog', aria-labelledby='mySmallModalLabel', aria-hidden='true', data-backdrop="static", data-keyboard="false")
+		.modal-dialog
+			.modal-content
+				blockquote
+					.bs-callout.bs-callout-info
+						h4 Title
+						p body

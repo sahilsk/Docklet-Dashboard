@@ -15,7 +15,14 @@ socket.on('open', function () {
 	  console.log(msg);
   });
 
-});
+  $userAlertWindow .find(".modal-content h4").text("Connected");
+  $userAlertWindow .find(".modal-content p").text("You're back online. !!!");
+  $userAlertWindow.find(".modal-content p").attr("class", "bg-success");
+
+  setTimeout(function(){
+      $("#smallModalWindow").modal("hide");
+  }, 1000);
+});  
   
 socket.on("data", function(stream){
   console.log("Data:::::::::" + stream.toString()) ;
@@ -28,14 +35,21 @@ socket.on("data", function(stream){
   term.appendTo("#dockerEventWindow .outputWindow");
   term.write(stream); 
 
-});
-
+});  
 socket.on("event", function(data){
     console.log("Event:::::::::::::" + stream.status) ;
-
+ 
+}) 
+  
+socket.on("close", function(spark){
+  console.log("Disconnected from server");
+  $userAlertWindow.find(".modal-content h4").text("Discnnected");
+  $userAlertWindow.find(".modal-content p").text("You're disconnected.Trying connecting...");
+  $userAlertWindow.find(".modal-content p").attr("class", "bg-danger");
+  $("#smallModalWindow").modal("show");
 })
 
-
+  
 var dockerEvents = socket.substream('dockerEvents');
 
 /*
@@ -67,6 +81,7 @@ LOADING_GIF_24.src="/images/refreshing_x24.gif";
 
 //GLOBAL VARIABLES
   var selectedDockerHost = {};
+  var $userAlertWindow  =  $("#smallModalWindow");
 
 
 // Show form to add docklet
@@ -246,7 +261,7 @@ var $dockletContainer = $("#dockletsTable tbody");
 
 
 var renderImageInspectWindow =  function(){
-  var imageId = $(this).text();
+  var imageId = $(this).attr("image-id").trim();
 
   console.log("fetch detailed image info of (%s) %j", imageId, selectedDockerHost); 
 
@@ -262,14 +277,14 @@ var renderImageInspectWindow =  function(){
       console.log( "Error inspecting image: ", res.error);
     }else{
       console.log( selectedDockerHost);
-      addFloatingWindow({title:"Image: "+imageId, result: res.data })
+      addFloatingWindow({title:"Image: "+imageId.substring(0, 14), result: res.data })
 
     }
 
   });
 }
 
-$("#dynDataPlaceholder").on("click", ".imageTable tr td:nth-child(2)" , renderImageInspectWindow);
+$("#dynDataPlaceholder").on("click", ".imageTable tr td:nth-child(2) a" , renderImageInspectWindow);
 
 
 /****************** CONTAINER TABLE *************/
@@ -371,9 +386,7 @@ var listProcesses = function(e){
   });
 }
 
-
   //BIND 
-    //LOAD PROCESSES
     $("#dynDataPlaceholder").on("click", "#containersTable tr td:last-child a" , listProcesses);
 
 

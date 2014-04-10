@@ -24,7 +24,7 @@ primus.save(__dirname +'/public/primus/primus.js');
 
 rtController(primus);
 
-
+ 
 //Start server
 server.listen( CONFIG.app.port, function () {
   console.log('Express server listening on port ',  CONFIG.app.port   );

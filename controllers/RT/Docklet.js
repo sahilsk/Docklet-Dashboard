@@ -110,7 +110,7 @@ Docklet.prototype.ongetContainers = function( spark, data, fn){
 		console.log("error caught: " + error);
 		resData.error = error;
 		fn( resData  );		
-	}
+	} 
 }
 
 Docklet.prototype.ongetContainerProcesses = function( spark, data, fn){
