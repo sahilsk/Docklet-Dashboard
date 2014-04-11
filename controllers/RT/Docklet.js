@@ -8,7 +8,6 @@ var Docklet = function(){}
 
 Docklet.prototype.oncreate = function( spark, data, fn){
 	var resData = { error: null, data:null};
-
 	try{
 		mDocklet.save(data, function(err, docklet){
 			if(err){
@@ -24,7 +23,6 @@ Docklet.prototype.oncreate = function( spark, data, fn){
 		resData.error = err;
 		fn( resData );
 	}
-
 }
 
 Docklet.prototype.ondelete = function( spark, id, fn){
@@ -47,21 +45,35 @@ Docklet.prototype.oninfo = function( spark, id, fn){
 
 		}else{
 			var docker = new require('dockerode')({host: "http://"+obj.host, port: obj.port});
+			var healthCheck = require("../../lib/healthCheck");
+
 			docker.info(function(err, info) {
 				if(err) {
 					console.log("error caught: " + err);
 					resData.error = err;
-					fn( resData );
+					fn( resData );	
 				}else{
 					console.log("info: ", info);
 					resData.data = info;
-					fn(resData);
-				}
+					healthCheck( "http://"+obj.host+":" + obj.port+ obj.healthCheckPath , function(error, isOK){
+						resData.data.isHealthy = isOK;						
+						fn( resData );					
+					} );					
+				}	
+
 			});		
 	
 		}
 	})
 }
+
+
+var onhealthCheck = function( healthCheckUrl){
+
+
+
+}
+
 
 
 
@@ -190,7 +202,6 @@ Docklet.prototype.onexplore  = function( spark, id, fn){
 	
 		}
 	})
-
 }
 
 Docklet.prototype.onevents = function( spark, data, fn){

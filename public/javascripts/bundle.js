@@ -19407,17 +19407,29 @@ var $dockletContainer = $("#dockletsTable tbody");
     var $images  = $tdArray.eq(4);
     var $containers = $tdArray.eq(5);
     var $memoryLimit = $tdArray.eq(6);
+    var $healthCheck = $tdArray.eq(7);
+
+
+    var OK_ELEM = $("<span class='label label-success glyphicon glyphicon-ok text-center'> OK </span>");
+    var BAD_ELEM = $("<span class='label label-success glyphicon glyphicon-warning-sign text-center'> FAIL </span>");
  
     $($images, $containers, $memoryLimit).html( LOADING_GIF_24 );
 
     Docklet.info(id, function(res){
       if(res.error){
         console.log(res.error);
+        $images.text( "--NA--" );
+        $containers.text( "--NA--" );
+        $memoryLimit.text( "--NA--" );
+        $healthCheck.html( BAD_ELEM );
+
       }else{ 
         console.log( res.data);
         $images.text( res.data.Images);
         $containers.text( res.data.Containers);
         $memoryLimit.text( res.data.MemoryLimit);
+        $healthCheck.html(res.data.isHealthy? OK_ELEM : BAD_ELEM );      
+
       }
     });
   }
