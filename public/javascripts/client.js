@@ -86,10 +86,11 @@ LOADING_GIF_24.src="/images/refreshing_x24.gif";
 
 // Show form to add docklet
 $("#newDocklet").on("click", function(e){
-    e.preventDefault();
-    $("#actionStatus").addClass("hidden");
-     $("#docklets_new").modal("show");
-})
+  e.preventDefault();
+  $("#actionStatus").addClass("hidden");
+  $("#docklets_new").modal("show");
+});
+
 // Handle new docklet request
 $("#newDockletForm").on( "submit", function( event ) {
   event.preventDefault();
