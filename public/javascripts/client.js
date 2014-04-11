@@ -155,7 +155,7 @@ var $dockletContainer = $("#dockletsTable tbody");
 
 
     var OK_ELEM = $("<span class='label label-success glyphicon glyphicon-ok text-center'> OK </span>");
-    var BAD_ELEM = $("<span class='label label-success glyphicon glyphicon-warning-sign text-center'> FAIL </span>");
+    var BAD_ELEM = $("<span class='label label-danger glyphicon glyphicon-warning-sign text-center'> FAIL </span>");
  
     $($images, $containers, $memoryLimit).html( LOADING_GIF_24 );
 
