@@ -156,8 +156,15 @@ var $dockletContainer = $("#dockletsTable tbody");
 
     var OK_ELEM = $("<span class='label label-success glyphicon glyphicon-ok text-center'> OK </span>");
     var BAD_ELEM = $("<span class='label label-danger glyphicon glyphicon-warning-sign text-center'> FAIL </span>");
- 
-    $($images, $containers, $memoryLimit).html( LOADING_GIF_24 );
+  
+
+    $images.html( $(LOADING_GIF_24).clone() );
+    $containers.html(  $(LOADING_GIF_24).clone() );
+    $memoryLimit.html(    $(LOADING_GIF_24).clone() );
+    $healthCheck.html(    $(LOADING_GIF_24).clone() );
+
+
+//    $($images, $containers, $memoryLimit).html( LOADING_GIF_24 );
 
     Docklet.info(id, function(res){
       if(res.error){
@@ -229,7 +236,7 @@ var $dockletContainer = $("#dockletsTable tbody");
         $("#panel_"+id).remove();
         $("#dynDataPlaceholder").html($explorePanel);
         $(".datepicker").pickadate();
-         $(".timepicker").pickatime();
+        $(".timepicker").pickatime();
 
          //SET SELECTED DOCKERHOST INSTANCE
          selectedDockerHost = res.data.dockerHost

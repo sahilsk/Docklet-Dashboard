@@ -242,7 +242,7 @@ block content
 							th containers
 							th Memory Limit
 							th Health Status
-							th								 
+							th
 								a(href="#docklets/new", id="newDocklet",  class="label label-primary")
 									span(class="glyphicon glyphicon-plus") 
 					tbody
@@ -288,6 +288,14 @@ block content
 	div( class="panel panel-primary floatingWindow" id="dockerEventWindow")
 		div.panel-heading
 			h4.panel-title Docker Event
+				form.form-inline
+					.form-group
+						label  Monitor Docker Events 
+						input.datepicker(type="textbox", placeholder="eg. 31 March, 2014", size="8") 
+						input.timepicker(type="textbox", placeholder="eg. 4:30 AM", size="3")
+					a#dockerEvents(href='#', docker-id!="<%= id %>")
+						span(class="glyphicon glyphicon-circle-arrow-right")
+
 				button( class="glyphicon glyphicon-minus pull-right minFloatingWindow" aria-hidden="true" style="color: rgb(73, 68, 68);",title="minimize" ) 
 				button( class="glyphicon glyphicon-repeat pull-right clearOutputWindow" aria-hidden="true" style="color: rgb(73, 68, 68);", title="refresh" ) 	
 				
@@ -329,3 +337,4 @@ block content
 					.bs-callout.bs-callout-info
 						h4 Title
 						p body
+
