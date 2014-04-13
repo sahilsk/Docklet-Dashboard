@@ -39,11 +39,12 @@ Docklet.prototype.oninfo = function( spark, id, fn){
 
 	mDocklet.find(id, function( err, obj){
 		if( err){
-			console.log("error caught: " + error);
+			console.log("Error finding docklet: " + error);
 			resData.error = error;
 			fn( JSON.stringify( resData ) );		
 
 		}else{
+			console.log("docklet found: ", obj)
 			var docker = new require('dockerode')({host: "http://"+obj.host, port: obj.port});
 			var healthCheck = require("../../lib/healthCheck");
 

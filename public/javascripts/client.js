@@ -43,7 +43,7 @@ socket.on("event", function(data){
   
 socket.on("close", function(spark){
   console.log("Disconnected from server");
-  $userAlertWindow.find(".modal-content h4").text("Discnnected");
+  $userAlertWindow.find(".modal-content h4").text("Disconnected");
   $userAlertWindow.find(".modal-content p").text("You're disconnected.Trying connecting...");
   $userAlertWindow.find(".modal-content p").attr("class", "bg-danger");
   $("#smallModalWindow").modal("show");
@@ -229,27 +229,33 @@ var $dockletContainer = $("#dockletsTable tbody");
         console.log(res.data);
         $imageTable =  _.template( $("#imageTableTemplate").html(), {images:res.data.images, dockerId:id} );
 
+        $dockerEventsWindow = _.template( $("#dockerEventsTemplate").html(), {dockerId:id});
+
         res.data.imagesTable = $imageTable;
+        res.data.dockerEventsWindow = $dockerEventsWindow;
         
         $explorePanel = _.template( $("#explorePanelTemplate").html(), res.data );
 
         $("#panel_"+id).remove();
+
         $("#dynDataPlaceholder").html($explorePanel);
-        $(".datepicker").pickadate();
-        $(".timepicker").pickatime();
+
+        //Instantiate datepicker
+          $(".datepicker").pickadate();
+          $(".timepicker").pickatime();
 
          //SET SELECTED DOCKERHOST INSTANCE
          selectedDockerHost = res.data.dockerHost
 
-      // SCROLL TO IMAGE TABLE
-      var $imagesTable =  $("#imagesTable");
-      $imagesTable.addClass("panel-success");
-      //Scroll to process table
-      $("body").animate({
-        scrollTop: $imagesTable.offset().top 
-       }, 1000, function() {
+        // SCROLL TO IMAGE TABLE
+        var $imagesTable =  $("#imagesTable");
+        $imagesTable.addClass("panel-success");
+        //Scroll to process table
+        $("body").animate({
+          scrollTop: $imagesTable.offset().top 
+         }, 1000, function() {
             $imagesTable .removeClass("panel-success");
-      });            
+        });            
 
       }
     });
@@ -482,14 +488,13 @@ var minimizeWindow = function(e){
       console.log("Changing height: 20%");
       $(floatingWindow).width("300px");
   } else{
-    $(floatingWindow).width("600px");
+    $(floatingWindow).width("");
   }
 }
 var clearOutputWindow = function(e){
   e.preventDefault();
   console.log("clearing output window..")
-  console.log( $(this))
- $(this).parent().parent().next().find(".outputWindow").text("");
+  $(this).closest(".panel-body").find(".outputWindow").text("");
 }
 
 var closeFloatingWindow = function(){
@@ -502,6 +507,10 @@ var closeFloatingWindow = function(){
   $("body").on("click", ".clearOutputWindow", clearOutputWindow );
   $("body").on("click", ".closeFloatingWindow", closeFloatingWindow );
   $("body").on("click", "#loadContainers", listContainers)
+
+$(document).ready( function(){
+  
+})
 
 
 Backbone.history.start();

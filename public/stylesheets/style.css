@@ -8,16 +8,13 @@ body {
 .footer {
   margin-top: 50px;
 }
-#dockerEvents {
-  font-size: 27px;
-  line-height: 27px;
-  vertical-align: middle;
-}
 #dockerEventWindow {
   position: fixed;
   bottom: 0px;
   left: 10px;
   margin: 0px;
+  z-index: 222;
+  box-shadow: 3px 3px 13px black;
 }
 .count {
   background-color: #428bca;
@@ -63,5 +60,6 @@ ul.floatingWindowList li {
   list-style: none;
 }
 .floatingWindow {
+  transition: all 1s;
   width: 630px;
 }
