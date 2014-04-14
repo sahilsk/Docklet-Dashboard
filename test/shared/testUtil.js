@@ -13,7 +13,7 @@ module.exports = {
 		  console.log('Express server listening on port ',  CONFIG.app.port   );
 		});
 
-		this.baseURL = "localhost:"+CONFIG.app.port;
+		this.baseURL = "http://localhost:"+CONFIG.app.port;
 		return this.server;
 	},
 	stopApp : function(){

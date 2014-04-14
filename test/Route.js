@@ -33,6 +33,19 @@ describe("Test-Routes", function(){
 
 		})
 
+		it("GET /docklets", function(done){
+			superagent
+			.get( baseURL +"/")
+			.end(function(error, res){
+				if(error) 
+					throw error
+				res.should.have.status(200);
+				done();
+			});
+
+
+		})
+
 
 	})
 });
