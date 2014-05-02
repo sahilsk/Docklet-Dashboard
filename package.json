@@ -37,7 +37,8 @@
     "JSONStream": "~0.8.0",
     "event-stream": "~3.1.1",
     "through": "~2.3.4",
-    "request": "~2.34.0"
+    "request": "~2.34.0",
+    "engine.io": "~1.1.0"
   },
   "devDependencies": {
     "mocha": "~1.18.2",
