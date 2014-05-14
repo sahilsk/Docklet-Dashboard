@@ -211,6 +211,7 @@ var $dockletContainer = $("#dockletsTable tbody");
   // list images
   var exploreDocklet = function( event){
     event.preventDefault(); 
+    var CHUNK  = 100;
 
     //Highlight selected container
     $(this).closest("table").find("tr").removeClass("info");
@@ -227,7 +228,7 @@ var $dockletContainer = $("#dockletsTable tbody");
         console.log("Error: ", res.error)
       }else{
         console.log(res.data);
-        $imageTable =  _.template( $("#imageTableTemplate").html(), {images: _.first(res.data.images, 10) , dockerId:id} );
+        $imageTable =  _.template( $("#imageTableTemplate").html(), {images: _.first(res.data.images, CHUNK) , dockerId:id} );
 
         $dockerEventsWindow = _.template( $("#dockerEventsTemplate").html(), {dockerId:id});
 

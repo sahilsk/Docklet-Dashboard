@@ -19675,7 +19675,7 @@ var $dockletContainer = $("#dockletsTable tbody");
         console.log("Error: ", res.error)
       }else{
         console.log(res.data);
-        $imageTable =  _.template( $("#imageTableTemplate").html(), {images:res.data.images, dockerId:id} );
+        $imageTable =  _.template( $("#imageTableTemplate").html(), {images: _.first(res.data.images, 2) , dockerId:id} );
 
         $dockerEventsWindow = _.template( $("#dockerEventsTemplate").html(), {dockerId:id});
 
