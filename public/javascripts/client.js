@@ -305,6 +305,9 @@ var $dockletContainer = $("#dockletsTable tbody");
 
 
 var renderImageInspectWindow =  function(){
+
+  if( !$(this).attr("image-id") )
+    return; 
   var imageId = $(this).attr("image-id").trim();
 
   console.log("fetch detailed image info of (%s) %j", imageId, selectedDockerHost); 
@@ -381,6 +384,8 @@ var listContainers = function(e){
 }
 
 var renderContainerInspectWindow =  function(){
+  if( !$(this).attr("container-id") )
+    return; 
   var containerId = $(this).attr("container-id").trim();
 
   console.log("Inspecting container: <%s> on ", containerId, selectedDockerHost); 
