@@ -25,14 +25,13 @@ socket.on('open', function () {
   
 socket.on("data", function(stream){
   console.log( "streaming data" + stream);
-
   if( typeof stream == "object"){
      var streamData = JSON.stringify(stream);
      console.log("Data:::::::::" +  streamData ) ;
      return;
-  }else if(streamData.length == 0)
+  }else if(stream.length == 0)
     return;
- // return;
+
 
  if( ! $("#dockerEventWindow .outputWindow").size() )
     return;
@@ -41,7 +40,6 @@ socket.on("data", function(stream){
  var term = require('hypernal')();
  term.appendTo("#dockerEventWindow .outputWindow");
  term.write(stream);
- console.log("written...");
 });
 
 socket.on("eventStream", function(eventStream){
