@@ -1847,8 +1847,8 @@ function forEach (xs, f) {
   }
 }
 
-}).call(this,require("O05Eig"))
-},{"./_stream_readable":10,"./_stream_writable":12,"O05Eig":6,"core-util-is":13,"inherits":5}],9:[function(require,module,exports){
+}).call(this,require("c7qy72"))
+},{"./_stream_readable":10,"./_stream_writable":12,"c7qy72":6,"core-util-is":13,"inherits":5}],9:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2858,8 +2858,8 @@ function indexOf (xs, x) {
   return -1;
 }
 
-}).call(this,require("O05Eig"))
-},{"O05Eig":6,"buffer":1,"core-util-is":13,"events":4,"inherits":5,"isarray":14,"stream":20,"string_decoder/":15}],11:[function(require,module,exports){
+}).call(this,require("c7qy72"))
+},{"buffer":1,"c7qy72":6,"core-util-is":13,"events":4,"inherits":5,"isarray":14,"stream":20,"string_decoder/":15}],11:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3461,8 +3461,8 @@ function endWritable(stream, state, cb) {
   state.ended = true;
 }
 
-}).call(this,require("O05Eig"))
-},{"./_stream_duplex":8,"O05Eig":6,"buffer":1,"core-util-is":13,"inherits":5,"stream":20}],13:[function(require,module,exports){
+}).call(this,require("c7qy72"))
+},{"./_stream_duplex":8,"buffer":1,"c7qy72":6,"core-util-is":13,"inherits":5,"stream":20}],13:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -7655,8 +7655,8 @@ function through (write, end, opts) {
 }
 
 
-}).call(this,require("O05Eig"))
-},{"O05Eig":6,"stream":20}],50:[function(require,module,exports){
+}).call(this,require("c7qy72"))
+},{"c7qy72":6,"stream":20}],50:[function(require,module,exports){
 'use strict';
 
 var states = require('./lib/states');
@@ -19454,7 +19454,6 @@ var AppRouter = require("./client/routes.js");
 
 var app_router = new AppRouter;
 
-
  
 var socket = Primus.connect('ws://'+window.location.host );
 socket.on('open', function () {
@@ -19473,20 +19472,34 @@ socket.on('open', function () {
 });  
   
 socket.on("data", function(stream){
-  console.log("Data:::::::::" + stream.toString()) ;
+  console.log( "streaming data" + stream);
 
-  if( stream.toString().length == 0)
+  if( typeof stream == "object"){
+     var streamData = JSON.stringify(stream);
+     console.log("Data:::::::::" +  streamData ) ;
+     return;
+  }else if(streamData.length == 0)
+    return;
+ // return;
+
+ if( ! $("#dockerEventWindow .outputWindow").size() )
     return;
 
-  $("#dockerEventWindow .outputWindow").append("<hr/>" );
-  var term = require('hypernal')();
-  term.appendTo("#dockerEventWindow .outputWindow");
-  term.write(stream); 
+ $("#dockerEventWindow .outputWindow").append("<hr/>");
+ var term = require('hypernal')();
+ term.appendTo("#dockerEventWindow .outputWindow");
+ term.write(stream);
+ console.log("written...");
+});
 
-});  
+socket.on("eventStream", function(eventStream){
+  console.log("Event Streamed");
+
+})
+
+
 socket.on("event", function(data){
-    console.log("Event:::::::::::::" + stream.status) ;
- 
+    console.log("Event:::::::::::::" + data) ;
 }) 
   
 socket.on("close", function(spark){
@@ -19501,7 +19514,7 @@ socket.on("close", function(spark){
 var dockerEvents = socket.substream('dockerEvents');
 
 /*
-var foo = socket.substream('foo');
+var foo = socket.substream('foo'); 
 foo.on('data', function (data) {
   console.log('recieved data', data);
 }).on('end', function () {
@@ -19509,7 +19522,7 @@ foo.on('data', function (data) {
 });
 */
 
-var Docklet = socket.resource('Docklet');
+var Docklet = socket.resource('Docklet', false);
 
 Docklet.on('ready', function () {
 
@@ -19551,14 +19564,12 @@ $("#newDockletForm").on( "submit", function( event ) {
   }
   console.log( data );
 
-
   Docklet.create( data, function(jRes){
      if( jRes.error ){
         console.log("Error creating docklet: " , _.compact(jRes.error))
           $("#actionStatus").html( "<strong> Warning </strong> "+ JSON.stringify(jRes.error))
           $("#actionStatus").addClass("alert-danger").removeClass("hidden");
 
- 
      }else{
         console.log("Docklet created successfully");
         var tr = "<tr></tr>";
@@ -19568,7 +19579,6 @@ $("#newDockletForm").on( "submit", function( event ) {
 
         var dockletRow = _.template( $("#dockletRowTemplate").html(),  jRes.data  );
         console.log( dockletRow );
-
 
 //        $("#dockletsTable").find("tbody").append( dockletRow );
           
@@ -19659,6 +19669,7 @@ var $dockletContainer = $("#dockletsTable tbody");
   // list images
   var exploreDocklet = function( event){
     event.preventDefault(); 
+    var CHUNK  = 100;
 
     //Highlight selected container
     $(this).closest("table").find("tr").removeClass("info");
@@ -19675,7 +19686,7 @@ var $dockletContainer = $("#dockletsTable tbody");
         console.log("Error: ", res.error)
       }else{
         console.log(res.data);
-        $imageTable =  _.template( $("#imageTableTemplate").html(), {images: _.first(res.data.images, 2) , dockerId:id} );
+        $imageTable =  _.template( $("#imageTableTemplate").html(), {images: _.first(res.data.images, CHUNK) , dockerId:id} );
 
         $dockerEventsWindow = _.template( $("#dockerEventsTemplate").html(), {dockerId:id});
 
@@ -19703,8 +19714,7 @@ var $dockletContainer = $("#dockletsTable tbody");
           scrollTop: $imagesTable.offset().top 
          }, 1000, function() {
             $imagesTable .removeClass("panel-success");
-        });            
-
+        }); 
       }
     });
   }

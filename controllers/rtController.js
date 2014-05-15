@@ -12,7 +12,7 @@ var Resources = function( primus){
 
 
 	// Create our resource
-	var Docklet = primus.resource('Docklet', new docklet() );
+	var Docklet = primus.resource('Docklet', new docklet(), false );
 }
 
 

@@ -15,7 +15,7 @@ var server = http.createServer(app);
 var primus = new Primus(server,{ transformer: 'engine.io' });
 // Use resource plugin
 primus
-.use('multiplex', 'primus-multiplex')
+// .use('multiplex', 'primus-multiplex')
 .use('emitter', 'primus-emitter')
 .use('resource', resource)
 .use('substream', require('substream'));

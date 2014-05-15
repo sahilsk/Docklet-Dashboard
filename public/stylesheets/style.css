@@ -8,6 +8,10 @@ body {
 .footer {
   margin-top: 50px;
 }
+.panel-body {
+  max-height: 500px;
+  overflow: auto;
+}
 #dockerEventWindow {
   position: fixed;
   bottom: 0px;

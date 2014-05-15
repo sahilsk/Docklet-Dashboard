@@ -5,7 +5,6 @@ var  mDocklet = require("../../models/docklet")
 
 var Docklet = function(){}
 
-
 Docklet.prototype.oncreate = function( spark, data, fn){
 	var resData = { error: null, data:null};
 	try{
@@ -68,15 +67,9 @@ Docklet.prototype.oninfo = function( spark, id, fn){
 	})
 }
 
-
 var onhealthCheck = function( healthCheckUrl){
 
-
-
 }
-
-
-
 
 Docklet.prototype.ongetImages = function( spark, data, fn){
 	var resData = { error: null, data:null};
@@ -155,7 +148,6 @@ Docklet.prototype.ongetContainerProcesses = function( spark, data, fn){
 	}
 }
 
-
 Docklet.prototype.onexplore  = function( spark, id, fn){
 
 	var resData = { error: null, data:null};
@@ -223,7 +215,7 @@ Docklet.prototype.onevents = function( spark, data, fn){
 					fn( resData );
 				}else{
 
-					var  connection = require("../../server")
+					//var  connection = require("../../server")
 					//stream.setEncoding('utf-8');
 					var prettyjson = require('prettyjson');
 					var JSONStream = require('JSONStream')
@@ -231,13 +223,13 @@ Docklet.prototype.onevents = function( spark, data, fn){
 					var through = require("through");
 					stream.pipe(JSONStream.parse())
 						  .pipe(es.mapSync(function (data) {
-						  		data.time = (new Date( parseInt(data.time)*1000)).toString()
-						  		console.log( ":::::::::::" + data.time)
-								console.log( prettyjson.render(data))
-								connection.primus.write(prettyjson.render(data));
+						  		data.time = (new Date( parseInt(data.time)*1000)).toString();
+								spark.write( prettyjson.render(data));
+								//connection.primus.write(prettyjson.render(data));
+						  		console.log( ":::::::::::" + data.time);
+								console.log( prettyjson.render(data));								
 
-						   }))
-
+						   }));
 
 					//stream.pipe(connection.primus)
 					//a.write('Hello Wrld');
@@ -245,9 +237,8 @@ Docklet.prototype.onevents = function( spark, data, fn){
 					fn(resData);
 				}
 			});		
-	
 		}
-	})
+	});
 }
 
 Docklet.prototype.oninspectImage = function(spark, data, fn){
